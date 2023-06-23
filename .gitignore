@@ -42,5 +42,4 @@ Tests/phpunit.xml
 .phpunit.result.cache
 ws/node_modules
 .xdebug
-.php-cs-fixer.cache
 .vscode
