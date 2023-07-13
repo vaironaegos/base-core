@@ -7,16 +7,16 @@ namespace Astrotech\ApiBase\Domain;
 use Astrotech\ApiBase\Domain\Contracts\Entity;
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use Astrotech\ApiBase\Domain\Exceptions\EntityException;
-use Astrotech\ApiBase\Utils\CollectionBase;
 use DateTimeImmutable;
 use DateTimeInterface;
 use JsonSerializable;
 use ReflectionClass;
 use ReflectionUnionType;
+use Enum;
 
 /**
  * Class Entity
- * @package App\Shared\Domain
+ * @package Astrotech\Shared\Domain
  *
  * @property int|string $id
  */
@@ -36,17 +36,16 @@ abstract class EntityBase implements Entity, JsonSerializable
                 unset($values[$property]);
             }
         }
-
-        $this->beforeFilling($values);
+        $this->beforeInstantiating($values);
         $this->fill($values);
-        $this->afterFilling();
+        $this->afterInstantiating();
     }
 
-    protected function beforeFilling(array &$values): void
+    protected function beforeInstantiating(array &$values): void
     {
     }
 
-    protected function afterFilling(): void
+    protected function afterInstantiating(): void
     {
     }
 
@@ -136,11 +135,11 @@ abstract class EntityBase implements Entity, JsonSerializable
         }
 
         if (!$isUnitType && $reflectProperty->getType()->getName() === 'bool') {
-            $value = (bool) $value;
+            $value = boolval($value);
         }
 
         if (!$isUnitType && $reflectProperty->getType()->getName() === 'float') {
-            $value = (float) $value;
+            $value = floatval($value);
         }
 
         $this->{$property} = $value;
@@ -193,11 +192,6 @@ abstract class EntityBase implements Entity, JsonSerializable
                 continue;
             }
 
-            if ($value instanceof CollectionBase) {
-                $propertyList[$prop] = $value->getItems(true);
-                continue;
-            }
-
             if (is_object($value) && enum_exists($value::class)) {
                 $value = (!empty($value) ? $value->value : null);
             }
@@ -246,6 +240,10 @@ abstract class EntityBase implements Entity, JsonSerializable
             }
 
             if ($value instanceof Entity) {
+                $props[$prop] = $value->getId();
+            }
+
+            if ($value instanceof EnumClas) {
                 $props[$prop] = $value->getId();
             }
         }
