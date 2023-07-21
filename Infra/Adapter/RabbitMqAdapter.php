@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Adapter;
 
-use Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
+use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessage;
+use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueSystem;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -26,20 +28,36 @@ final class RabbitMqAdapter implements QueueSystem
         $this->channel = $this->connection->channel();
     }
 
-    public function publish(string $message, string $queueName, array $options = []): void
+    public function publish(QueueMessage $inputData): void
     {
-        $exchangeName = $options['exchange'] ?? '';
-        $routingKey = $options['routingKey'] ?? '';
+        $this->channel->exchange_declare(
+            $inputData->getOption('exchangeName'),
+            $inputData->getOption('exchangeType', AMQPExchangeType::DIRECT),
+            false,
+            true,
+            false
+        );
 
-        $this->channel->exchange_declare($exchangeName, 'direct', false, true, false);
         $this->channel->queue_declare(
-            queue: $queueName,
+            queue: $inputData->queueName,
             durable: true,
             auto_delete: false,
-            arguments: isset($options['queue']) ? new AMQPTable($options['queue']) : []
+            arguments: $inputData->getOption('queue') ?
+                new AMQPTable($inputData->getOption('queue')) :
+                []
         );
-        $this->channel->queue_bind($queueName, $exchangeName, $routingKey);
-        $this->channel->basic_publish(new AMQPMessage($message, ['delivery_mode' => 2]), $exchangeName, $routingKey);
+
+        $this->channel->queue_bind(
+            $inputData->queueName,
+            $inputData->getOption('exchangeName'),
+            $inputData->getOption('routingKey')
+        );
+        $this->channel->basic_publish(new AMQPMessage(
+            (string)$inputData,
+            ['delivery_mode' => 2]),
+            $inputData->getOption('exchangeName'),
+            $inputData->getOption('routingKey')
+        );
     }
 
     public function consume(string $queueName, callable $callback, array $options = []): void

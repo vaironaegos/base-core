@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Adapter\Contracts;
 
 /**
- * Interface Dto
+ * Interface QueueSystem
  */
 interface Dto
 {
