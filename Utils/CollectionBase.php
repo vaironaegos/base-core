@@ -28,7 +28,7 @@ abstract class CollectionBase implements ArrayAccess, Countable, Iterator, JsonS
         return true;
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         if (!isset($this->items[$offset])) {
             return null;
@@ -37,7 +37,7 @@ abstract class CollectionBase implements ArrayAccess, Countable, Iterator, JsonS
         return $this->items[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $className = $this->className();
 
@@ -57,43 +57,43 @@ abstract class CollectionBase implements ArrayAccess, Countable, Iterator, JsonS
         $this->items[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
 
-    public function current()
+    public function current(): mixed
     {
         return current($this->items);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->items);
     }
 
-    public function key()
+    public function key(): int
     {
         return key($this->items);
     }
 
-    public function valid()
+    public function valid(): bool
     {
         $key = key($this->items);
-        return ($key !== null && $key !== false);
+        return ($key !== null);
     }
 
-    public function rewind()
+    public function rewind():void
     {
         reset($this->items);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->items;
     }

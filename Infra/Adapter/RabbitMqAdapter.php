@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Adapter;
 
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessage;
+use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessageCollection;
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueSystem;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -28,35 +29,35 @@ final class RabbitMqAdapter implements QueueSystem
         $this->channel = $this->connection->channel();
     }
 
-    public function publish(QueueMessage $inputData): void
+    public function publish(QueueMessage $message): void
     {
         $this->channel->exchange_declare(
-            $inputData->getOption('exchangeName'),
-            $inputData->getOption('exchangeType', AMQPExchangeType::DIRECT),
+            $message->getOption('exchangeName'),
+            $message->getOption('exchangeType', AMQPExchangeType::DIRECT),
             false,
             true,
             false
         );
 
         $this->channel->queue_declare(
-            queue: $inputData->queueName,
+            queue: $message->queueName,
             durable: true,
             auto_delete: false,
-            arguments: $inputData->getOption('queue') ?
-                new AMQPTable($inputData->getOption('queue')) :
+            arguments: $message->getOption('queue') ?
+                new AMQPTable($message->getOption('queue')) :
                 []
         );
 
         $this->channel->queue_bind(
-            $inputData->queueName,
-            $inputData->getOption('exchangeName'),
-            $inputData->getOption('routingKey')
+            $message->queueName,
+            $message->getOption('exchangeName'),
+            $message->getOption('routingKey')
         );
         $this->channel->basic_publish(new AMQPMessage(
-            (string)$inputData,
+            (string)$message,
             ['delivery_mode' => 2]),
-            $inputData->getOption('exchangeName'),
-            $inputData->getOption('routingKey')
+            $message->getOption('exchangeName'),
+            $message->getOption('routingKey')
         );
     }
 
@@ -78,5 +79,10 @@ final class RabbitMqAdapter implements QueueSystem
 
         $this->channel->close();
         $this->connection->close();
+    }
+
+    public function publishInBatch(QueueMessageCollection $collection): void
+    {
+
     }
 }
