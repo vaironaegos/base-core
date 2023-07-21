@@ -83,6 +83,8 @@ final class RabbitMqAdapter implements QueueSystem
 
     public function publishInBatch(QueueMessageCollection $collection): void
     {
-
+        foreach ($collection as $message) {
+            $this->publish($message);
+        }
     }
 }

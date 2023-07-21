@@ -12,7 +12,7 @@ class ValidationException extends ExceptionBase
     protected int|string $errorCode = 'VALIDATION_ERROR';
     protected int $statusCode = 400;
 
-    public function __construct(array $details, string $message = '', ?int $code = 0, Exception $previous = null)
+    public function __construct(array $details, string $message = '', ?int $code = 404, Exception $previous = null)
     {
         $this->statusCode = $code;
         parent::__construct($details, $message, $code, $previous);
