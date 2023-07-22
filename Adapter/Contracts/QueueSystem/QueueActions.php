@@ -12,4 +12,5 @@ enum QueueActions: string
     case EMAIL_VERIFICATION = 'emailVerification';
     case PHONE_VERIFICATION_REQUEST = 'phoneVerificationRequest';
     case PHONE_VERIFICATION = 'phoneVerification';
+    case UPDATE_AVATAR = 'avatarUpdate';
 }
