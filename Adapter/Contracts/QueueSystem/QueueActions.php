@@ -15,4 +15,5 @@ enum QueueActions: string
     case UPDATE_AVATAR = 'avatarUpdate';
     case CHANGE_AUTOMATIC_OPERATIONS = 'automaticOperationsUpdate';
     case UPDATE_PROFILE = 'updateProfile';
+    case ARBITRATION_REQUEST = 'arbitrationRequest';
 }
