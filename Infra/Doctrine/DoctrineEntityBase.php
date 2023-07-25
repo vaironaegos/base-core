@@ -121,12 +121,14 @@ abstract class DoctrineEntityBase
         }
 
         foreach ($propertyList as $name => $value) {
-             if ($toSnakeCase) {
+            if ($toSnakeCase) {
                 $name = camelCaseToUnderscores($name);
             }
 
             $props[$name] = $value;
         }
+
+        $props['id'] = $this->getId();
 
         return $props;
     }
