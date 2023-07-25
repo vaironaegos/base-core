@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Exception;
 
-use App\Shared\Infra\Http\HttpStatus;
 use Exception;
 
 class ValidationException extends ExceptionBase
