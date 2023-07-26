@@ -193,13 +193,14 @@ abstract class EntityBase implements Entity, JsonSerializable
             }
 
             if (is_object($value) && enum_exists($value::class)) {
-                $value = (!empty($value) ? $value->value : null);
+                $propertyList[$prop] = !empty($value) ? $value->value : null;
+                continue;
             }
 
             if (is_object($value)) {
                 $reflectObject = new ReflectionClass(get_class($value));
                 $properties = $reflectObject->getProperties();
-                $propertyList[$prop] = [];
+//                $propertyList[$prop] = [];
 
                 foreach ($properties as $property) {
                     $property->setAccessible(true);

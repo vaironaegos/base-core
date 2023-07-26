@@ -20,8 +20,6 @@ abstract class ControllerBase
     protected Response $response;
     protected array $args;
 
-    abstract public function handle(Request $request): array;
-
     /**
      * @param Request $request
      * @param Response $response
@@ -112,4 +110,6 @@ abstract class ControllerBase
 
         $this->request->withParsedBody($contents);
     }
+
+    abstract public function handle(Request $request): array;
 }

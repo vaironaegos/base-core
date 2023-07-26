@@ -2,6 +2,7 @@
 
 namespace Astrotech\ApiBase\Infra\Doctrine;
 
+use Astrotech\ApiBase\Domain\Contracts\Entity;
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use DateTime;
 use DateTimeInterface;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\PrePersist;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
+use ReflectionUnionType;
 
 #[HasLifecycleCallbacks]
 abstract class DoctrineEntityBase
@@ -49,6 +51,14 @@ abstract class DoctrineEntityBase
             $reflectObject = new ReflectionClass($this);
             $reflectProperty = $reflectObject->getProperty($field);
             $propertyType = $reflectProperty->getType()->getName();
+            $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
+
+            if (!empty($value) && is_array($value) && !$isUnitType) {
+                $propertyType = $reflectProperty->getType()->getName();
+                if (is_a($propertyType, DoctrineEntityBase::class, true)) {
+                    $value = new $propertyType($value);
+                }
+            }
 
             if (enum_exists($propertyType)) {
                 $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
