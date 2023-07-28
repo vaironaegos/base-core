@@ -16,5 +16,7 @@ enum QueueActions: string
     case CHANGE_AUTOMATIC_OPERATIONS = 'automaticOperationsUpdate';
     case UPDATE_PROFILE = 'updateProfile';
     case ARBITRATION_REQUEST = 'arbitrationRequest';
-    case ORDER_CREATED = 'orderCreated';
+    case ARBITRATION_ORDER_CREATED = 'arbitrationOrderCreated';
+    case ARBITRATION_ORDER_APPROVED = 'arbitrationOrderApproved';
+    case ARBITRATION_PROCESS = 'arbitrationProccess';
 }
