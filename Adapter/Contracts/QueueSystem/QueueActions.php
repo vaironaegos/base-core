@@ -18,5 +18,8 @@ enum QueueActions: string
     case ARBITRATION_REQUEST = 'arbitrationRequest';
     case ARBITRATION_ORDER_CREATED = 'arbitrationOrderCreated';
     case ARBITRATION_ORDER_APPROVED = 'arbitrationOrderApproved';
-    case ARBITRATION_PROCESS = 'arbitrationProccess';
+    case ARBITRATION_PROCESS = 'arbitrationProcess';
+    case GENERATE_VIEW = 'generateView';
+    case UPDATE_VIEW = 'updateView';
+    case DEPOSIT_CREATED = 'depositCreated';
 }

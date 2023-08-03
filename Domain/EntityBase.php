@@ -107,24 +107,32 @@ abstract class EntityBase implements Entity, JsonSerializable
         $reflectProperty = $reflectObject->getProperty($property);
         $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
 
-        // Logic to convert entities properties to Entity class by array
-        if (!empty($value) && is_array($value) && !$isUnitType) {
+        if (!$isUnitType) {
             $propertyType = $reflectProperty->getType()->getName();
-            if (is_a($propertyType, Entity::class, true)) {
+
+            // Logic to convert entities properties to Entity class from array
+            if (!empty($value) && is_array($value) && is_a($propertyType, Entity::class, true)) {
                 $value = new $propertyType($value);
             }
-        }
 
-        // Logic to convert value objects properties to ValueObject class by string
-        if (is_string($value) && !$isUnitType) {
-            $propertyType = $reflectProperty->getType()->getName();
-            if (is_a($propertyType, ValueObject::class, true)) {
+            // Logic to convert value objects properties to ValueObject class by string
+            if (is_string($value) && is_a($propertyType, ValueObject::class, true)) {
                 $value = (!empty($value) ? new $propertyType($value) : null);
             }
 
             // Logic to convert enums to string
-            if (enum_exists($propertyType)) {
+            if (is_int($value) && enum_exists($propertyType)) {
                 $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
+            }
+
+            // Logic to force convert boolean values
+            if ($reflectProperty->getType()->getName() === 'bool') {
+                $value = boolval($value);
+            }
+
+            // Logic to force convert float values
+            if ($reflectProperty->getType()->getName() === 'float') {
+                $value = floatval($value);
             }
         }
 
@@ -132,14 +140,6 @@ abstract class EntityBase implements Entity, JsonSerializable
 
         if ($isDateValue) {
             $value = new DateTimeImmutable($value);
-        }
-
-        if (!$isUnitType && $reflectProperty->getType()->getName() === 'bool') {
-            $value = boolval($value);
-        }
-
-        if (!$isUnitType && $reflectProperty->getType()->getName() === 'float') {
-            $value = floatval($value);
         }
 
         $this->{$property} = $value;
