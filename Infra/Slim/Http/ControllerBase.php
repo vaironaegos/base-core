@@ -20,6 +20,8 @@ abstract class ControllerBase
     protected Response $response;
     protected array $args;
 
+    abstract public function handle(Request $request): array;
+
     /**
      * @param Request $request
      * @param Response $response
@@ -77,7 +79,7 @@ abstract class ControllerBase
             }
 
             return $this->answerError(message: $e->getMessage(), data: $meta);
-        } catch (Throwable|Error|InvalidArgumentException|MappingException $e) {
+        } catch (Throwable | Error | InvalidArgumentException | MappingException $e) {
             $meta = [];
 
             if (!APP_IS_PRODUCTION) {
@@ -111,5 +113,14 @@ abstract class ControllerBase
         $this->request->withParsedBody($contents);
     }
 
-    abstract public function handle(Request $request): array;
+    protected function getLoggedUser(): array
+    {
+        $header = $this->request->getHeader('X-SkyEx-User');
+
+        if (!$header) {
+            return [];
+        }
+
+        return json_decode(current($header), true)['data'];
+    }
 }
