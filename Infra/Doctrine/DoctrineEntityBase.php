@@ -29,7 +29,7 @@ abstract class DoctrineEntityBase
             fseek($this->id, 0);
         }
 
-        $this->id = isset($data['id']) && !empty($data['id']) && !isset($this->id) ?
+        $this->id = !empty($data['id']) && empty($this->id) ?
             Uuid::fromString($data['id'])->getBytes() :
             Uuid::uuid4()->getBytes();
 
@@ -125,7 +125,7 @@ abstract class DoctrineEntityBase
                 foreach ($properties as $property) {
                     $property->setAccessible(true);
                     $propertyList[$prop][$property->getName()] = !$property->isInitialized($value) &&
-                        $property->getType()->allowsNull() ? null : $property->getValue($value);
+                    $property->getType()->allowsNull() ? null : $property->getValue($value);
                 }
             }
         }
