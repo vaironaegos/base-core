@@ -20,8 +20,6 @@ abstract class ControllerBase
     protected Response $response;
     protected array $args;
 
-    abstract public function handle(Request $request): array;
-
     /**
      * @param Request $request
      * @param Response $response
@@ -113,6 +111,8 @@ abstract class ControllerBase
         $this->request->withParsedBody($contents);
     }
 
+    abstract public function handle(Request $request): array;
+
     protected function getLoggedUser(): array
     {
         $header = $this->request->getHeader('X-SkyEx-User');
@@ -121,6 +121,17 @@ abstract class ControllerBase
             return [];
         }
 
-        return json_decode(current($header), true)['data'];
+        return json_decode(current($header), true);
+    }
+
+    protected function getSettings(): array
+    {
+        $header = $this->request->getHeader('X-SkyEx-Settings');
+
+        if (!$header) {
+            return [];
+        }
+
+        return json_decode(current($header), true);
     }
 }
