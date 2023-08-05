@@ -115,12 +115,13 @@ abstract class ControllerBase
 
     protected function getLoggedUser(): array
     {
-        $header = $this->request->getHeader('X-SkyEx-User');
+        $header = $this->request->getHeaderLine('X-SkyEx-User');
 
         if (!$header) {
             return [];
         }
 
-        return json_decode(current($header), true)['data'];
+        return [];
+        //return json_decode(($header), true)['data'];
     }
 }
