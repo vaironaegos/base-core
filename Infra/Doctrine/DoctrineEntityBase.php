@@ -3,6 +3,7 @@
 namespace Astrotech\ApiBase\Infra\Doctrine;
 
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
+use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -183,8 +184,9 @@ abstract class DoctrineEntityBase
             $this->createdAt = $now;
         }
 
-        if (property_exists($this, 'createdBy')) {
-            $this->createdBy = $this->getFullName() . " [{$this->getId()}]";
+        $loggedUser = ControllerBase::loggedUser();
+        if ($loggedUser && property_exists($this, 'createdBy')) {
+            $this->createdBy = $loggedUser['firstName'] . " [{$loggedUser['id']}]";
         }
     }
 
