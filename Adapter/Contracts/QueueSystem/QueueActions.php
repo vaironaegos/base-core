@@ -5,6 +5,7 @@ namespace Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
 enum QueueActions: string
 {
     case SIGN_IN = 'signIn';
+    case ADMIN_SIGN_IN = 'adminSignIn';
     case SIGN_UP = 'signUp';
     case FORGOT_PASSWORD = 'forgotPassword';
     case RESET_PASSWORD = 'resetPassword';
