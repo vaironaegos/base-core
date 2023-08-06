@@ -2,9 +2,9 @@
 
 namespace Astrotech\ApiBase\Infra\Doctrine;
 
-use Astrotech\ApiBase\Domain\Contracts\Entity;
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
@@ -17,14 +17,26 @@ use ReflectionUnionType;
 #[HasLifecycleCallbacks]
 abstract class DoctrineEntityBase
 {
-    #[
-        Id,
-        Column(name: 'id', type: 'binary', length: 16, nullable: false)
-    ]
+    #[Id, Column(name: 'id', type: 'binary', length: 16, nullable: false)]
     protected mixed $id = '';
 
     public function __construct(?array $data)
     {
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+
+            if (is_string($value) && isDateUs($value)) {
+                $data[$key] = new DateTimeImmutable($value . ' 00:00:00');
+                continue;
+            }
+
+            if (is_string($value) && isDateTimeUs($value)) {
+                $data[$key] = new DateTimeImmutable($value);
+            }
+        }
+
         if (isset($this->id) && is_resource($this->id)) {
             fseek($this->id, 0);
         }
@@ -166,12 +178,13 @@ abstract class DoctrineEntityBase
     #[PrePersist]
     public function populateCreationBlameables(): void
     {
-        if (property_exists($this, 'createdAt')) {
+        if (property_exists($this, 'createdAt') && empty($this->createdAt)) {
             $now = new DateTime();
             $this->createdAt = $now;
-            if (property_exists($this, 'createdBy')) {
-                $this->createdBy = $this->getFullName() . " [{$this->getId()}]";
-            }
+        }
+
+        if (property_exists($this, 'createdBy')) {
+            $this->createdBy = $this->getFullName() . " [{$this->getId()}]";
         }
     }
 
