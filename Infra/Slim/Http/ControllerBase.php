@@ -115,13 +115,13 @@ abstract class ControllerBase
 
     protected function getLoggedUser(): array
     {
-        $header = $this->request->getHeader('X-SkyEx-User');
+        $header = $this->request->getHeaderLine('X-SkyEx-User');
 
         if (!$header) {
             return [];
         }
 
-        return json_decode(current($header), true);
+        return json_decode(current($this->request->getHeader('X-SkyEx-User')), true);
     }
 
     protected function getSettings(): array
@@ -132,6 +132,6 @@ abstract class ControllerBase
             return [];
         }
 
-        return json_decode(current($header), true);
+        return json_decode(current($this->request->getHeader('X-SkyEx-Settings')), true);
     }
 }

@@ -13,6 +13,7 @@ use JsonSerializable;
 use ReflectionClass;
 use ReflectionUnionType;
 use Enum;
+use UnitEnum;
 
 /**
  * Class Entity
@@ -105,6 +106,11 @@ abstract class EntityBase implements Entity, JsonSerializable
 
         $reflectObject = new ReflectionClass($this);
         $reflectProperty = $reflectObject->getProperty($property);
+
+        if ($reflectProperty->isPrivate()) {
+            return $this;
+        }
+
         $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
 
         if (!$isUnitType) {
@@ -220,18 +226,18 @@ abstract class EntityBase implements Entity, JsonSerializable
         return $props;
     }
 
-    public function prepare(): array
+    public function prepare(bool $toSnakeCase = false): array
     {
         $props = [];
         $propertyList = get_object_vars($this);
 
         /** @var int|string|object $value */
         foreach ($propertyList as $prop => $value) {
-            $prop = camelCaseToUnderscores($prop);
+            $prop = $toSnakeCase ? camelCaseToUnderscores($prop) : $prop;
             $props[$prop] = $value;
 
             if ($value instanceof DateTimeInterface) {
-                $props[$prop] = $value->format(DATE_ATOM);
+                $props[$prop] = $value->format('Y-m-d H:i:s');
                 continue;
             }
 
@@ -241,11 +247,12 @@ abstract class EntityBase implements Entity, JsonSerializable
             }
 
             if ($value instanceof Entity) {
-                $props[$prop] = $value->getId();
+                unset($props[$prop]);
+                continue;
             }
 
-            if ($value instanceof EnumClas) {
-                $props[$prop] = $value->getId();
+            if ($value instanceof UnitEnum) {
+                $props[$prop] = !empty($value->value) ? $value->value : null;
             }
         }
 
