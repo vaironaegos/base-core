@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Mapping\MappingException;
 use Error;
 use InvalidArgumentException;
+use mysql_xdevapi\ExecutionStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;
@@ -19,6 +20,7 @@ abstract class ControllerBase
     protected Request $request;
     protected Response $response;
     protected array $args;
+    protected static array $loggedUser = [];
 
     /**
      * @param Request $request
@@ -121,7 +123,14 @@ abstract class ControllerBase
             return [];
         }
 
-        return json_decode(current($this->request->getHeader('X-SkyEx-User')), true);
+        self::$loggedUser = json_decode(current($this->request->getHeader('X-SkyEx-User')), true);
+
+        return self::$loggedUser;
+    }
+
+    public static function loggedUser(): array
+    {
+        return self::$loggedUser;
     }
 
     protected function getSettings(): array
