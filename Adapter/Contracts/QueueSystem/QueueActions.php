@@ -23,4 +23,5 @@ enum QueueActions: string
     case GENERATE_VIEW = 'generateView';
     case UPDATE_VIEW = 'updateView';
     case DEPOSIT_CREATED = 'depositCreated';
+    case DEPOSIT_APPROVED = 'depositApproved';
 }
