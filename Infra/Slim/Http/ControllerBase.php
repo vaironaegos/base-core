@@ -8,7 +8,6 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Mapping\MappingException;
 use Error;
 use InvalidArgumentException;
-use mysql_xdevapi\ExecutionStatus;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;
