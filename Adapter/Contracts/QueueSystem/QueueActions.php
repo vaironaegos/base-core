@@ -24,4 +24,9 @@ enum QueueActions: string
     case UPDATE_VIEW = 'updateView';
     case DEPOSIT_CREATED = 'depositCreated';
     case DEPOSIT_APPROVED = 'depositApproved';
+    case P2P_TRANSFER_ORDER_CREATED = 'p2pTransferOrderCreated';
+    case P2P_TRANSFER_HASH_FOUND = 'p2pTransferHashFound';
+    case P2P_TRANSFER_ORDER_APPROVED = 'p2pTransferOrderApproved';
+    case P2P_TRANSFER_RECEIVED = 'p2pTransferOrderReceived';
+    case P2P_TRANSFER_SEND = 'p2pTransferOrderSended';
 }
