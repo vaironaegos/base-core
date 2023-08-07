@@ -9,7 +9,7 @@ use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 final class FileLog implements LogSystem
 {
     private string $logsPath = ROOT_PATH . '/storage/logs';
-    
+
     public function debug(string $message, array $options = []): void
     {
         $fileName = $options['filename'] ?? 'log.txt';
