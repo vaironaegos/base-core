@@ -29,4 +29,5 @@ enum QueueActions: string
     case P2P_TRANSFER_ORDER_APPROVED = 'p2pTransferOrderApproved';
     case P2P_TRANSFER_RECEIVED = 'p2pTransferOrderReceived';
     case P2P_TRANSFER_SEND = 'p2pTransferOrderSended';
+    case DEPOSIT_CANCELLED = 'depositCancelled';
 }
