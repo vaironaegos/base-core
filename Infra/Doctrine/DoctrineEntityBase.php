@@ -7,6 +7,7 @@ use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Id;
@@ -127,6 +128,11 @@ abstract class DoctrineEntityBase
 
             if (is_object($value) && enum_exists($value::class)) {
                 $value = (!empty($value) ? $value->value : null);
+                continue;
+            }
+
+            if ($value instanceof Collection) {
+                $propertyList[$prop] = $value->toArray();
                 continue;
             }
 
