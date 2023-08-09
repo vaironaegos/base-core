@@ -21,6 +21,7 @@ enum QueueActions: string
     case ARBITRATION_ORDER_APPROVED = 'arbitrationOrderApproved';
     case ARBITRATION_PROCESS = 'arbitrationProcess';
     case GENERATE_VIEW = 'generateView';
+    case REMOVE_VIEW = 'removeView';
     case UPDATE_VIEW = 'updateView';
     case DEPOSIT_CREATED = 'depositCreated';
     case DEPOSIT_APPROVED = 'depositApproved';
@@ -30,4 +31,6 @@ enum QueueActions: string
     case P2P_TRANSFER_RECEIVED = 'p2pTransferOrderReceived';
     case P2P_TRANSFER_SEND = 'p2pTransferOrderSended';
     case DEPOSIT_CANCELLED = 'depositCancelled';
+    case VOUCHER_CREATED = 'voucherCreated';
+    case VOUCHER_DELETED = 'voucherDeleted';
 }
