@@ -33,4 +33,5 @@ enum QueueActions: string
     case DEPOSIT_CANCELLED = 'depositCancelled';
     case VOUCHER_CREATED = 'voucherCreated';
     case VOUCHER_DELETED = 'voucherDeleted';
+    case NETWORK_COMMISSIONS_PAID = 'networkCommissionsPaid';
 }
