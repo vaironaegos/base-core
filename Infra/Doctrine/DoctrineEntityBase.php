@@ -176,8 +176,16 @@ abstract class DoctrineEntityBase
         return Uuid::fromBytes($this->id)->toString();
     }
 
+    public function setId(mixed $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getBinaryId(): string
     {
+        if (!is_resource($this->id)) {
+            return $this->id;
+        }
         fseek($this->id, 0);
         return stream_get_contents($this->id);
     }

@@ -28,7 +28,7 @@ abstract class ConsumerBase
 
     public function execute(): void
     {
-        $logfilePath = LOGS_PATH . "/{$this->queueName}-consumer.log";
+        $logfilePath = "{$this->queueName}-consumer.log";
         $prefix = "[" . uniqid() . " | queue: {$this->queueName}]";
 
         /** @var LogSystem $logSystem */
