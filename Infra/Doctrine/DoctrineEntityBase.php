@@ -8,9 +8,14 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\Event\PreLoadEventArgs;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\PreLoad;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\PostLoad;
+use Doctrine\ORM\Mapping\PreFlush;
 use Doctrine\ORM\Mapping\PrePersist;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -103,6 +108,7 @@ abstract class DoctrineEntityBase
     {
         if (is_resource($this->id)) {
             fseek($this->id, 0);
+            $this->id = Uuid::fromBytes(stream_get_contents($this->id))->toString();
         }
 
         $props = [];
@@ -193,6 +199,10 @@ abstract class DoctrineEntityBase
     #[PrePersist]
     public function populateCreationBlameables(): void
     {
+        if (is_resource($this->id)) {
+            fseek($this->id, 0);
+        }
+
         if (property_exists($this, 'createdAt') && empty($this->createdAt)) {
             $now = new DateTime();
             $this->createdAt = $now;
@@ -202,6 +212,25 @@ abstract class DoctrineEntityBase
         if ($loggedUser && property_exists($this, 'createdBy')) {
             $this->createdBy = $loggedUser['firstName'] . " [{$loggedUser['id']}]";
         }
+    }
+
+    public function prepare(): self
+    {
+        $propertyList = get_object_vars($this);
+
+        foreach ($propertyList as $key => $value) {
+            if ($value instanceof DoctrineEntityBase) {
+                if (!is_resource($value->id)) {
+                    continue;
+                }
+
+                fseek($value->id, 0);
+                $value->id = stream_get_contents($value->id);
+                $value->prepare();
+            }
+        }
+
+        return $this;
     }
 
 //    #[PreUpdate]
