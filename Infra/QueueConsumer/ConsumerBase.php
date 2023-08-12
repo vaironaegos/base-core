@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
 use Throwable;
@@ -43,12 +44,13 @@ abstract class ConsumerBase
             $logMessage = "{$prefix} Message processed Successfully!" . PHP_EOL;
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
-            $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
         } catch (Throwable $e) {
             $logMessage = "{$prefix} Unexpected Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
-            $this->message->getChannel()->basic_nack($this->message->getDeliveryTag(), false, true);
+            if ($this->message->getChannel()->is_open()) {
+                $this->message->getChannel()->basic_nack($this->message->getDeliveryTag(), false, true);
+            }
         }
     }
 }
