@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use PhpAmqpLib\Exception\AMQPProtocolChannelException;
+use PhpAmqpLib\Exception\AMQPExceptionInterface;
+use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
 use Throwable;
@@ -29,8 +30,12 @@ abstract class ConsumerBase
 
     public function execute(): void
     {
-        $logfilePath = "{$this->queueName}-consumer.log";
+        $logfilePath = LOGS_PATH . "/{$this->queueName}-consumer.log";
         $prefix = "[" . uniqid() . " | queue: {$this->queueName}]";
+
+        if (!is_dir(LOGS_PATH)) {
+            mkdir(LOGS_PATH);
+        }
 
         /** @var LogSystem $logSystem */
         $logSystem = $this->container->get(LogSystem::class);
@@ -44,13 +49,16 @@ abstract class ConsumerBase
             $logMessage = "{$prefix} Message processed Successfully!" . PHP_EOL;
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
-        } catch (Throwable $e) {
-            $logMessage = "{$prefix} Unexpected Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
+            $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
+        } catch (AMQPRuntimeException|AMQPExceptionInterface $e) {
+            $logMessage = "{$prefix} AMQP Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
-            if ($this->message->getChannel()->is_open()) {
-                $this->message->getChannel()->basic_nack($this->message->getDeliveryTag(), false, true);
-            }
+            $this->message->getChannel()->basic_nack($this->message->getDeliveryTag(), false, true);
+        } catch (Throwable $e) {
+            $logMessage = "{$prefix} Generic Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
+            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
+            echo $logMessage;
         }
     }
 }
