@@ -32,9 +32,4 @@ final class RabbitMqConnector
 
         return self::$connection;
     }
-
-    public static function reconnect()
-    {
-
-    }
 }
