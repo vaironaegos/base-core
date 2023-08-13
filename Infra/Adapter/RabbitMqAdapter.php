@@ -53,9 +53,9 @@ final class RabbitMqAdapter implements QueueSystem
             $message->getOption('exchangeName'),
             $message->getOption('routingKey')
         );
-        $this->channel->basic_publish(new AMQPMessage(
-            (string)$message,
-            ['delivery_mode' => 2]),
+
+        $this->channel->basic_publish(
+            new AMQPMessage((string)$message, ['delivery_mode' => 2]),
             $message->getOption('exchangeName'),
             $message->getOption('routingKey')
         );
