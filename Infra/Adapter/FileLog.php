@@ -8,12 +8,10 @@ use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 
 final class FileLog implements LogSystem
 {
-    private string $logsPath = ROOT_PATH . '/storage/logs';
-    
     public function debug(string $message, array $options = []): void
     {
-        $fileName = $options['filename'] ?? 'log.txt';
+        $fileName = $options['filename'] ?? 'fileLog.log';
         $output = '[' . date('Y-m-d H:i:s') . '] ' . PHP_EOL . $message . PHP_EOL . PHP_EOL;
-        file_put_contents($this->logsPath . '/' . $fileName, $output, FILE_APPEND);
+        file_put_contents($fileName, $output, FILE_APPEND);
     }
 }
