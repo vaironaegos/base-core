@@ -32,6 +32,7 @@ enum QueueActions: string
     case P2P_TRANSFER_SEND = 'p2pTransferOrderSended';
     case DEPOSIT_CANCELLED = 'depositCancelled';
     case VOUCHER_CREATED = 'voucherCreated';
+    case VOUCHER_CAN_PAID_COMMISSION_CREATED = 'voucherCanPaidCommissionCreated';
     case VOUCHER_DELETED = 'voucherDeleted';
     case NETWORK_COMMISSIONS_PAID = 'networkCommissionsPaid';
     case BONUS_MATRIX_PAID = 'bonusMatrixPaid';
