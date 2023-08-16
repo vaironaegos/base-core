@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
+use AMQPException;
+use AMQPQueue;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use Doctrine\DBAL\Exception\DriverException;
 use GuzzleHttp\Exception\RequestException;
@@ -24,11 +26,11 @@ abstract class ConsumerBase
 
     public function __construct(
         protected readonly ContainerInterface $container,
-        protected readonly AMQPMessage $message
+        protected readonly AMQPQueue $queue
     ) {
-        $this->queueName = $message->getRoutingKey();
-        $this->rawMessageBody = $message->getBody();
-        $this->messageBody = json_decode($message->getBody(), true)['data'];
+        $this->queueName = $queue->getName();
+        $this->rawMessageBody = $queue->get()->getBody();
+        $this->messageBody = json_decode($this->rawMessageBody, true)['data'];
     }
 
     public function execute(): void

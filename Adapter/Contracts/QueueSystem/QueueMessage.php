@@ -11,8 +11,7 @@ class QueueMessage extends DtoBase
         public readonly QueueActions $action,
         public readonly array $data,
         protected readonly array $options = []
-    )
-    {
+    ) {
     }
 
     public function getOption(string|int $optionKey, mixed $defaultValue = null): mixed
