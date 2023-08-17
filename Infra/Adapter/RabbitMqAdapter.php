@@ -27,6 +27,8 @@ final class RabbitMqAdapter implements QueueSystem
             'vhost' => '/'
         ]);
 
+        $this->connection->connect();
+
         $this->channel = new AMQPChannel($this->connection);
     }
 
@@ -35,19 +37,18 @@ final class RabbitMqAdapter implements QueueSystem
         $exchange = new AMQPExchange($this->channel);
         $exchange->setName($message->getOption('exchangeName'));
         $exchange->setType($message->getOption('exchangeType', AMQP_EX_TYPE_DIRECT));
+        $exchange->setFlags(AMQP_DURABLE);
         $exchange->declareExchange();
 
         $queue = new AMQPQueue($this->channel);
         $queue->setName($message->queueName);
-        $queue->setFlags(AMQP_DURABLE | AMQP_AUTODELETE);
+        $queue->setFlags(AMQP_DURABLE);
         $queue->declareQueue();
         $queue->bind($exchange->getName(), $queue->getName());
 
         $exchange->publish((string)$message, $queue->getName(), AMQP_NOPARAM, [
             'delivery_mode' => 2
         ]);
-
-        $this->connection->disconnect();
     }
 
     public function publishInBatch(QueueMessageCollection $messageCollection): void
