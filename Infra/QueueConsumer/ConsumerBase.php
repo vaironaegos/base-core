@@ -50,6 +50,7 @@ abstract class ConsumerBase
             $logMessage = "{$prefix} Message processed Successfully!" . PHP_EOL;
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
+            $this->message->getChannel()->basic_ack($this->message->getDeliveryTag(), false, true);
         } catch (AMQPRuntimeException | AMQPProtocolException | AMQPExceptionInterface $e) {
             $logMessage = "{$prefix} AMQP Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
