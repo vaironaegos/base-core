@@ -133,7 +133,7 @@ abstract class DoctrineEntityBase
             }
 
             if (is_object($value) && enum_exists($value::class)) {
-                $value = (!empty($value) ? $value->value : null);
+                $propertyList[$prop] = (!empty($value) ? $value->value : null);
                 continue;
             }
 
