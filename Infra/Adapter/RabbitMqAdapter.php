@@ -4,51 +4,61 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Adapter;
 
-use AMQPChannel;
-use AMQPConnection;
-use AMQPExchange;
-use AMQPQueue;
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessage;
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessageCollection;
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueSystem;
+use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Exchange\AMQPExchangeType;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 final class RabbitMqAdapter implements QueueSystem
 {
-    private AMQPConnection $connection;
+    private AMQPStreamConnection $connection;
     private AMQPChannel $channel;
 
     public function __construct()
     {
-        $this->connection = new AMQPConnection([
-            'host' => $_ENV['RABBITMQ_HOST'],
-            'port' => $_ENV['RABBITMQ_PORT'],
-            'login' => $_ENV['RABBITMQ_USERNAME'],
-            'password' => $_ENV['RABBITMQ_PASSWORD'],
-            'vhost' => '/'
-        ]);
-
-        $this->connection->connect();
-
-        $this->channel = new AMQPChannel($this->connection);
+        $this->connection = new AMQPStreamConnection(
+            $_ENV['RABBITMQ_HOST'],
+            $_ENV['RABBITMQ_PORT'],
+            $_ENV['RABBITMQ_USERNAME'],
+            $_ENV['RABBITMQ_PASSWORD']
+        );
+        $this->channel = $this->connection->channel();
     }
 
     public function publish(QueueMessage $message): void
     {
-        $exchange = new AMQPExchange($this->channel);
-        $exchange->setName($message->getOption('exchangeName'));
-        $exchange->setType($message->getOption('exchangeType', AMQP_EX_TYPE_DIRECT));
-        $exchange->setFlags(AMQP_DURABLE);
-        $exchange->declareExchange();
+        $this->channel->exchange_declare(
+            $message->getOption('exchangeName'),
+            $message->getOption('exchangeType', AMQPExchangeType::DIRECT),
+            false,
+            true,
+            false
+        );
 
-        $queue = new AMQPQueue($this->channel);
-        $queue->setName($message->queueName);
-        $queue->setFlags(AMQP_DURABLE);
-        $queue->declareQueue();
-        $queue->bind($exchange->getName(), $queue->getName());
+        $this->channel->queue_declare(
+            queue: $message->queueName,
+            durable: true,
+            auto_delete: false,
+            arguments: $message->getOption('queue') ?
+                new AMQPTable($message->getOption('queue')) :
+                []
+        );
 
-        $exchange->publish((string)$message, $queue->getName(), AMQP_NOPARAM, [
-            'delivery_mode' => 2
-        ]);
+        $this->channel->queue_bind(
+            $message->queueName,
+            $message->getOption('exchangeName'),
+            $message->getOption('routingKey')
+        );
+
+        $this->channel->basic_publish(
+            new AMQPMessage((string)$message, ['delivery_mode' => 2]),
+            $message->getOption('exchangeName'),
+            $message->getOption('routingKey')
+        );
     }
 
     public function publishInBatch(QueueMessageCollection $messageCollection): void
