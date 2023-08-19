@@ -31,29 +31,6 @@ final class RabbitMqAdapter implements QueueSystem
 
     public function publish(QueueMessage $message): void
     {
-        $this->channel->exchange_declare(
-            $message->getOption('exchangeName'),
-            $message->getOption('exchangeType', AMQPExchangeType::DIRECT),
-            false,
-            true,
-            false
-        );
-
-        $this->channel->queue_declare(
-            queue: $message->queueName,
-            durable: true,
-            auto_delete: false,
-            arguments: $message->getOption('queue') ?
-                new AMQPTable($message->getOption('queue')) :
-                []
-        );
-
-        $this->channel->queue_bind(
-            $message->queueName,
-            $message->getOption('exchangeName'),
-            $message->getOption('routingKey')
-        );
-
         $this->channel->basic_publish(
             new AMQPMessage((string)$message, ['delivery_mode' => 2]),
             $message->getOption('exchangeName'),
