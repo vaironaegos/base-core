@@ -9,23 +9,14 @@ use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueMessageCollection;
 use Astrotech\ApiBase\Adapter\Contracts\QueueSystem\QueueSystem;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Wire\AMQPTable;
 
 final class RabbitMqAdapter implements QueueSystem
 {
-    private AMQPStreamConnection $connection;
     private AMQPChannel $channel;
 
-    public function __construct()
+    public function __construct(private readonly AMQPStreamConnection $connection)
     {
-        $this->connection = new AMQPStreamConnection(
-            $_ENV['RABBITMQ_HOST'],
-            $_ENV['RABBITMQ_PORT'],
-            $_ENV['RABBITMQ_USERNAME'],
-            $_ENV['RABBITMQ_PASSWORD']
-        );
         $this->channel = $this->connection->channel();
     }
 
