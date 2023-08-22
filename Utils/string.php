@@ -192,3 +192,34 @@ if (!function_exists('convertDecimalToLongString')) {
         return ($rt ? $rt : "zero");
     }
 }
+
+if (!function_exists('env')) {
+    function env(string $name, mixed $default = null): mixed
+    {
+        $value = getenv($name);
+
+        if (!$value) {
+            $value = $_ENV[$name];
+        }
+
+        if (!$value) {
+            $value = $_SERVER[$name];
+        }
+
+        return $value ?? $default;
+    }
+}
+
+if (!function_exists('config')) {
+    function config(string $name): mixed
+    {
+        $configs = CONFIG;
+        $keys = explode('.', $name);
+
+        foreach ($keys as $key) {
+            $configs = $configs[$key];
+        }
+
+        return $configs;
+    };
+}
