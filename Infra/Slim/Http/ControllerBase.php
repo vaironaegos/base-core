@@ -6,7 +6,6 @@ use Astrotech\ApiBase\Exception\RuntimeException;
 use Astrotech\ApiBase\Exception\ValidationException;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Mapping\MappingException;
-use DomainException;
 use Error;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -43,6 +42,7 @@ abstract class ControllerBase
                 'error' => [
                     'name' => $e->getName(),
                     'code' => $e->getCode(),
+                    'details' => $e->details(),
                     'message' => $e->getMessage(),
                     'file' => $e->getFile() . ':' . $e->getLine(),
                     'stackTrace' => $e->getTrace()
@@ -55,7 +55,10 @@ abstract class ControllerBase
                 'error' => [
                     'name' => $e->getMessage(),
                     'code' => $e->getCode(),
-                    'query' => $e->getQuery()->getSQL(),
+                    'details' => [
+                        'sql' => $e->getQuery()->getSQL(),
+                        'values' => $e->getQuery()->getParams()
+                    ],
                     'file' => $e->getFile() . ':' . $e->getLine(),
                     'stackTrace' => $e->getTrace()
                 ]
@@ -67,6 +70,7 @@ abstract class ControllerBase
                 'error' => [
                     'name' => $e->getName(),
                     'code' => $e->getCode(),
+                    'details' => [],
                     'file' => $e->getFile() . ':' . $e->getLine(),
                     'stackTrace' => $e->getTrace()
                 ]
@@ -79,6 +83,7 @@ abstract class ControllerBase
                     'name' => $e::class,
                     'message' => $e->getMessage(),
                     'code' => $e->getCode(),
+                    'details' => [],
                     'file' => $e->getFile() . ':' . $e->getLine(),
                     'stackTrace' => $e->getTrace()
                 ]
