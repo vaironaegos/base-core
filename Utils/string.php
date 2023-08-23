@@ -215,6 +215,7 @@ if (!function_exists('config')) {
     function config(string $name): mixed
     {
         $configs = CONFIG;
+        
         $keys = explode('.', $name);
 
         foreach ($keys as $key) {
