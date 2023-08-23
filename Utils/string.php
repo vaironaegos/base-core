@@ -214,7 +214,7 @@ if (!function_exists('env')) {
 if (!function_exists('config')) {
     function config(string $name): mixed
     {
-        $configs = Container::instance()->get('config');
+        $configs = CONFIG;
         $keys = explode('.', $name);
 
         foreach ($keys as $key) {
