@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain;
 
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
-use JsonSerializable;
 use ReflectionClass;
+use JsonSerializable;
+use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 
 abstract class ValueObjectBase implements ValueObject, JsonSerializable
 {

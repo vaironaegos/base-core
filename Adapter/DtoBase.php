@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Adapter;
 
+use ReflectionClass;
+use JsonSerializable;
+use ReflectionUnionType;
 use Astrotech\ApiBase\Adapter\Contracts\Dto;
 use Astrotech\ApiBase\Adapter\Exception\ImmutableDtoException;
 use Astrotech\ApiBase\Adapter\Exception\InvalidDtoParamException;
-use JsonSerializable;
-use ReflectionClass;
-use ReflectionUnionType;
 
 /**
  * Class DtoBase

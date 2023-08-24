@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Doctrine\DBAL\Exception\DriverException;
-use GuzzleHttp\Exception\RequestException;
-use PhpAmqpLib\Exception\AMQPConnectionClosedException;
-use PhpAmqpLib\Exception\AMQPProtocolException;
-use PhpAmqpLib\Exception\AMQPRuntimeException;
+use Throwable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
-use Throwable;
+use GuzzleHttp\Exception\RequestException;
+use Doctrine\DBAL\Exception\DriverException;
+use PhpAmqpLib\Exception\AMQPRuntimeException;
+use PhpAmqpLib\Exception\AMQPProtocolException;
+use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 abstract class ConsumerBase
 {

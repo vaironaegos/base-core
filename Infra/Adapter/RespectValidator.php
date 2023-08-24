@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Infra\Adapter;
 
-use Astrotech\ApiBase\Adapter\Contracts\ValidatorInterface;
-use Astrotech\ApiBase\Exception\ValidationException;
 use Respect\Validation\Validator;
+use Astrotech\ApiBase\Exception\ValidationException;
+use Astrotech\ApiBase\Adapter\Contracts\ValidatorInterface;
 
 /**
  * For all Respect/Validation rules
  * @see https://respect-validation.readthedocs.io/en/latest/
  */
-class RespectValidator implements ValidatorInterface
+final class RespectValidator implements ValidatorInterface
 {
     public static function validateBatch(array $value, array $validationRules): void
     {

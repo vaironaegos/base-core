@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain;
 
-use Astrotech\ApiBase\Domain\Contracts\Event;
 use DateTimeImmutable;
+use Astrotech\ApiBase\Domain\Contracts\Event;
 
 abstract class EventBase implements Event
 {

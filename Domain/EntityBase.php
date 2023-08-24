@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain;
 
+use UnitEnum;
+use ReflectionClass;
+use JsonSerializable;
+use DateTimeImmutable;
+use DateTimeInterface;
+use ReflectionUnionType;
 use Astrotech\ApiBase\Domain\Contracts\Entity;
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use Astrotech\ApiBase\Domain\Exceptions\EntityException;
-use DateTimeImmutable;
-use DateTimeInterface;
-use JsonSerializable;
-use ReflectionClass;
-use ReflectionUnionType;
-use Enum;
-use UnitEnum;
 
 /**
  * Class Entity
@@ -133,12 +132,12 @@ abstract class EntityBase implements Entity, JsonSerializable
 
             // Logic to force convert boolean values
             if ($reflectProperty->getType()->getName() === 'bool') {
-                $value = boolval($value);
+                $value = (bool) $value;
             }
 
             // Logic to force convert float values
             if ($reflectProperty->getType()->getName() === 'float') {
-                $value = floatval($value);
+                $value = (float) $value;
             }
         }
 
@@ -206,7 +205,7 @@ abstract class EntityBase implements Entity, JsonSerializable
             if (is_object($value)) {
                 $reflectObject = new ReflectionClass(get_class($value));
                 $properties = $reflectObject->getProperties();
-//                $propertyList[$prop] = [];
+                //                $propertyList[$prop] = [];
 
                 foreach ($properties as $property) {
                     $property->setAccessible(true);

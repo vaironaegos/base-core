@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Infra\Doctrine;
 
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
-use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use DateTime;
+use ReflectionClass;
+use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ODM\MongoDB\Event\PreLoadEventArgs;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\PreLoad;
-use Doctrine\ORM\Event\PreFlushEventArgs;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\PostLoad;
-use Doctrine\ORM\Mapping\PreFlush;
-use Doctrine\ORM\Mapping\PrePersist;
-use Ramsey\Uuid\Uuid;
-use ReflectionClass;
 use ReflectionUnionType;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Astrotech\ApiBase\Domain\Contracts\ValueObject;
+use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 
 #[HasLifecycleCallbacks]
 abstract class DoctrineEntityBase
@@ -145,7 +142,7 @@ abstract class DoctrineEntityBase
             if (is_object($value)) {
                 $reflectObject = new ReflectionClass(get_class($value));
                 $properties = $reflectObject->getProperties();
-//                $propertyList[$prop] = [];
+                //                $propertyList[$prop] = [];
 
                 foreach ($properties as $property) {
                     $property->setAccessible(true);
@@ -233,15 +230,15 @@ abstract class DoctrineEntityBase
         return $this;
     }
 
-//    #[PreUpdate]
-//    public function populateUpdateBlameables(): void
-//    {
-////        @todo Verificar o motivo de quando ativa para preencher os campos updated by e at não está persistindo na base.
-//        if (property_exists($this, 'updatedAt')) {
-//            $this->updatedAt = new DateTime();
-//            if (property_exists($this, 'updatedBy')) {
-//                $this->updatedBy = $this->getFullName() ." [{$this->getId()}]";
-//            }
-//        }
-//    }
+    //    #[PreUpdate]
+    //    public function populateUpdateBlameables(): void
+    //    {
+    ////        @todo Verificar o motivo de quando ativa para preencher os campos updated by e at não está persistindo na base.
+    //        if (property_exists($this, 'updatedAt')) {
+    //            $this->updatedAt = new DateTime();
+    //            if (property_exists($this, 'updatedBy')) {
+    //                $this->updatedBy = $this->getFullName() ." [{$this->getId()}]";
+    //            }
+    //        }
+    //    }
 }

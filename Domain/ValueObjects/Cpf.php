@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain\ValueObjects;
 
-use Astrotech\ApiBase\Domain\ValueObjectBase;
 use DomainException;
+use Astrotech\ApiBase\Domain\ValueObjectBase;
 
 final class Cpf extends ValueObjectBase
 {

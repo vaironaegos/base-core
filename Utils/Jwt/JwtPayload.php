@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Utils\Jwt;
 
-
 use DateTime;
 use DateInterval;
 use InvalidArgumentException;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain\Collection;
 
-use Astrotech\ApiBase\Utils\CollectionBase;
 use DateTimeInterface;
+use Astrotech\ApiBase\Utils\CollectionBase;
 
 final class DatetimeCollection extends CollectionBase
 {

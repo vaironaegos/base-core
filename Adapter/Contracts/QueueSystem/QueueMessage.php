@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
 
 use Astrotech\ApiBase\Adapter\DtoBase;
 
-class QueueMessage extends DtoBase
+final class QueueMessage extends DtoBase
 {
     public function __construct(
         public readonly string $queueName,

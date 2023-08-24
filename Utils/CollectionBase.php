@@ -88,7 +88,7 @@ abstract class CollectionBase implements ArrayAccess, Countable, Iterator, JsonS
         return ($key !== null);
     }
 
-    public function rewind():void
+    public function rewind(): void
     {
         reset($this->items);
     }

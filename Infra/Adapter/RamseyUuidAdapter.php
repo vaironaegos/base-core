@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Adapter;
 
-use Astrotech\ApiBase\Adapter\Contracts\UuidGenerator;
 use Ramsey\Uuid\Uuid;
+use Astrotech\ApiBase\Adapter\Contracts\UuidGenerator;
 
 final class RamseyUuidAdapter implements UuidGenerator
 {

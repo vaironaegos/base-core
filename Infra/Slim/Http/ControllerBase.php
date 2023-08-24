@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Infra\Slim\Http;
 
-use Astrotech\ApiBase\Exception\RuntimeException;
-use Astrotech\ApiBase\Exception\ValidationException;
-use Doctrine\DBAL\Exception\DriverException;
-use Doctrine\ORM\Mapping\MappingException;
 use Error;
-use InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;
+use InvalidArgumentException;
+use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\DBAL\Exception\DriverException;
+use Astrotech\ApiBase\Exception\RuntimeException;
+use Psr\Http\Message\ResponseInterface as Response;
+use Astrotech\ApiBase\Exception\ValidationException;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class ControllerBase
 {

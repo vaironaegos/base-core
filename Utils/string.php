@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Astrotech\ApiBase\Exception\RuntimeException;
-use Astrotech\ApiBase\Infra\Container;
 
 if (!function_exists('stripAccents')) {
     function stripAccents(string $value): string
@@ -215,7 +214,7 @@ if (!function_exists('config')) {
     function config(string $name): mixed
     {
         $configs = CONFIG;
-        
+
         $keys = explode('.', $name);
 
         foreach ($keys as $key) {

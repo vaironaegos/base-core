@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain\Exceptions;
 
-use Astrotech\ApiBase\Domain\Contracts\DomainException as DomainExceptionInterface;
 use Exception;
 use Throwable;
+use Astrotech\ApiBase\Domain\Contracts\DomainException as DomainExceptionInterface;
 
 final class EntityException extends Exception implements DomainExceptionInterface
 {

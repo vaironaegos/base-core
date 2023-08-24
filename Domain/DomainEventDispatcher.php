@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain;
 
-use Astrotech\ApiBase\Domain\Contracts\Event;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Astrotech\ApiBase\Exception\RuntimeException;
-use Psr\EventDispatcher\ListenerProviderInterface;
 use stdClass;
+use Astrotech\ApiBase\Domain\Contracts\Event;
+use Astrotech\ApiBase\Exception\RuntimeException;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 final class DomainEventDispatcher implements EventDispatcherInterface
 {

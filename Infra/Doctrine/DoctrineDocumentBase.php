@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Infra\Doctrine;
 
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
-use DateTimeInterface;
 use ReflectionClass;
+use DateTimeInterface;
+use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 abstract class DoctrineDocumentBase
