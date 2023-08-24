@@ -59,7 +59,8 @@ abstract class ConsumerBase
             echo $logMessage;
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (DriverException $e) {
-            $logMessage = "{$prefix} Database Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}" . PHP_EOL . $e->getQuery()->getSQL();
+            $logMessage = "{$prefix} Database Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}" .
+                PHP_EOL . $e->getQuery()->getSQL();
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             sleep(2);
             echo $logMessage;

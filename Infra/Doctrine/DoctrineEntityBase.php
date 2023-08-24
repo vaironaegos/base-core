@@ -233,7 +233,7 @@ abstract class DoctrineEntityBase
     //    #[PreUpdate]
     //    public function populateUpdateBlameables(): void
     //    {
-    ////        @todo Verificar o motivo de quando ativa para preencher os campos updated by e at não está persistindo na base.
+    //@todo Verificar o motivo de quando ativa para preencher os campos updated by e at não está persistindo na base.
     //        if (property_exists($this, 'updatedAt')) {
     //            $this->updatedAt = new DateTime();
     //            if (property_exists($this, 'updatedBy')) {
