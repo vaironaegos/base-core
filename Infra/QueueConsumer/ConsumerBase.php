@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
+use GuzzleHttp\Exception\ConnectException;
+use PhpAmqpLib\Exception\AMQPEmptyDeliveryTagException;
 use Throwable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
@@ -52,7 +54,14 @@ abstract class ConsumerBase
             $logMessage = "{$prefix} Message processed Successfully!" . PHP_EOL;
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
-            $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
+
+            if ($this->message->getChannel()->is_open()) {
+                $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
+            }
+        } catch (AMQPEmptyDeliveryTagException $e) {
+            $logMessage = "{$prefix} Nonexistent Delivery Tag! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
+            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
+            echo $logMessage;
         } catch (AMQPRuntimeException | AMQPProtocolException | AMQPConnectionClosedException $e) {
             $logMessage = "{$prefix} AMQP Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
@@ -65,14 +74,19 @@ abstract class ConsumerBase
             sleep(2);
             echo $logMessage;
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
-        } catch (RequestException $e) {
+        } catch (RequestException | ConnectException $e) {
             $logMessage = "{$prefix} Request Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
             $logSystem->debug($logMessage, ['filename' => $logfilePath]);
             echo $logMessage;
+
+            if (!$this->message->getChannel()->is_open()) {
+                $this->message->getChannel()->getConnection()->reconnect();
+            }
+
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (Throwable $e) {
             $logMessage = "{$prefix} Generic Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
+            $logSystem->debug($logMessage, ['filen  ame' => $logfilePath]);
             echo $logMessage;
         }
     }
