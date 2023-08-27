@@ -40,4 +40,5 @@ enum QueueActions: string
     case BONUS_MATRIX_PAID = 'bonusMatrixPaid';
     case WITHDRAW_CREATED = 'withdrawCreated';
     case WITHDRAW_APPROVED = 'withdrawApproved';
+    case WITHDRAW_REFUSED = 'withdrawRefused';
 }
