@@ -38,4 +38,6 @@ enum QueueActions: string
     case VOUCHER_DELETED = 'voucherDeleted';
     case NETWORK_COMMISSIONS_PAID = 'networkCommissionsPaid';
     case BONUS_MATRIX_PAID = 'bonusMatrixPaid';
+    case WITHDRAW_CREATED = 'withdrawCreated';
+    case WITHDRAW_APPROVED = 'withdrawApproved';
 }
