@@ -21,6 +21,7 @@ abstract class ControllerBase
     protected Request $request;
     protected Response $response;
     protected array $args;
+    protected array $meta = [];
     protected static array $loggedUser = [];
 
     /**
@@ -38,9 +39,10 @@ abstract class ControllerBase
         $this->parseBody();
 
         try {
-            return $this->answerSuccess($this->handle($this->request));
+            return $this->answerSuccess($this->handle($this->request), $this->meta);
         } catch (ValidationException $e) {
-            $meta = [
+            $this->meta = [
+                ...$this->meta,
                 'error' => [
                     'name' => $e->getName(),
                     'code' => $e->getCode(),
@@ -51,9 +53,10 @@ abstract class ControllerBase
                 ]
             ];
 
-            return $this->answerFail($e->details(), $meta, HttpStatus::tryFrom($e->getStatusCode()));
+            return $this->answerFail($e->details(), $this->meta, HttpStatus::tryFrom($e->getStatusCode()));
         } catch (DriverException $e) {
-            $meta = [
+            $this->meta = [
+                ...$this->meta,
                 'error' => [
                     'name' => $e->getMessage(),
                     'code' => $e->getCode(),
@@ -66,9 +69,10 @@ abstract class ControllerBase
                 ]
             ];
 
-            return $this->answerError(message: $e->getMessage(), data: $meta);
+            return $this->answerError(message: $e->getMessage(), data: $this->meta);
         } catch (RuntimeException $e) {
-            $meta = [
+            $this->meta = [
+                ...$this->meta,
                 'error' => [
                     'name' => $e->getName(),
                     'code' => $e->getCode(),
@@ -78,9 +82,10 @@ abstract class ControllerBase
                 ]
             ];
 
-            return $this->answerError(message: $e->getMessage(), data: $meta);
+            return $this->answerError(message: $e->getMessage(), data: $this->meta);
         } catch (Throwable | Error | InvalidArgumentException | MappingException $e) {
-            $meta = [
+            $this->meta = [
+                ...$this->meta,
                 'error' => [
                     'name' => $e::class,
                     'message' => $e->getMessage(),
@@ -91,7 +96,7 @@ abstract class ControllerBase
                 ]
             ];
 
-            return $this->answerError(message: $e->getMessage(), data: $meta);
+            return $this->answerError(message: $e->getMessage(), data: $this->meta);
         }
     }
 
