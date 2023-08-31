@@ -31,6 +31,10 @@ trait DoctrineOdmSearcheable
         }
 
         foreach ($inputData->filters as $column => $param) {
+            if (empty($param)) {
+                continue;
+            }
+
             if (is_array($param)) {
                 foreach ($param as $operator => $value) {
                     $value = trim($value);

@@ -17,7 +17,7 @@ trait DoctrineOdmSorteable
 
         $params = $inputData->params;
 
-        if (str_contains(',', $inputData->params)) {
+        if (str_contains($inputData->params, ',')) {
             $params = explode(',', $inputData->params);
         }
 
