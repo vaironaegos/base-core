@@ -132,12 +132,12 @@ abstract class EntityBase implements Entity, JsonSerializable
 
             // Logic to force convert boolean values
             if ($reflectProperty->getType()->getName() === 'bool') {
-                $value = (bool) $value;
+                $value = (bool)$value;
             }
 
             // Logic to force convert float values
             if ($reflectProperty->getType()->getName() === 'float') {
-                $value = (float) $value;
+                $value = (float)$value;
             }
         }
 
@@ -246,6 +246,7 @@ abstract class EntityBase implements Entity, JsonSerializable
             }
 
             if ($value instanceof Entity) {
+                //$props[$prop] = $value->prepare();
                 unset($props[$prop]);
                 continue;
             }
