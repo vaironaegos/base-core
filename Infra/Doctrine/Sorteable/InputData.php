@@ -9,7 +9,7 @@ class InputData extends DtoBase
 {
     public function __construct(
         protected Builder $builder,
-        protected readonly ?string $params = null
+        protected readonly array $params = []
     ) {
     }
 }

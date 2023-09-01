@@ -15,31 +15,14 @@ trait DoctrineOdmSorteable
             return;
         }
 
-        $params = $inputData->params;
-
-        if (str_contains($inputData->params, ',')) {
-            $params = explode(',', $inputData->params);
-        }
-
-        if (is_array($params)) {
-            foreach ($params as $column) {
-                if (str_contains($column, '-')) {
-                    $key = explode('-', $column);
-                    $inputData->builder->sort($key[1], 'desc');
-                    continue;
-                }
-
-                $inputData->builder->sort($column, 'asc');
+        foreach ($inputData->params as $column) {
+            if (str_contains($column, '-')) {
+                $key = explode('-', $column);
+                $inputData->builder->sort($key[1], 'desc');
+                continue;
             }
-            return;
-        }
 
-        if (str_contains($params, '-')) {
-            $key = explode('-', $params);
-            $inputData->builder->sort($key[1], 'desc');
-            return;
+            $inputData->builder->sort($column, 'asc');
         }
-
-        $inputData->builder->sort($params, 'asc');
     }
 }
