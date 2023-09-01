@@ -6,7 +6,7 @@ namespace Astrotech\ApiBase\Exception;
 
 use Exception;
 
-final class RuntimeException extends ExceptionBase
+class RuntimeException extends ExceptionBase
 {
     protected int | string $errorCode = 'RUNTIME_ERROR';
 
