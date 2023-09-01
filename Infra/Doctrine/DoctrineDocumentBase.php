@@ -99,4 +99,9 @@ abstract class DoctrineDocumentBase
             'id' => $this->id,
         ];
     }
+
+    public function __get(string $name): mixed
+    {
+        return $this->$name;
+    }
 }
