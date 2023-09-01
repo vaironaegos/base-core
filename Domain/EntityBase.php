@@ -112,33 +112,35 @@ abstract class EntityBase implements Entity, JsonSerializable
 
         $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
 
-        if (!$isUnitType) {
-            $propertyType = $reflectProperty->getType()->getName();
+        if ($isUnitType) {
+            $this->$property = $value;
+        }
 
-            // Logic to convert entities properties to Entity class from array
-            if (!empty($value) && is_array($value) && is_a($propertyType, Entity::class, true)) {
-                $value = new $propertyType($value);
-            }
+        $propertyType = $isUnitType ? gettype($this->$property) : $reflectProperty->getType()->getName();
 
-            // Logic to convert value objects properties to ValueObject class by string
-            if (is_string($value) && is_a($propertyType, ValueObject::class, true)) {
-                $value = (!empty($value) ? new $propertyType($value) : null);
-            }
+        // Logic to convert entities properties to Entity class from array
+        if (!empty($value) && is_array($value) && is_a($propertyType, Entity::class, true)) {
+            $value = new $propertyType($value);
+        }
 
-            // Logic to convert enums to string
-            if (is_int($value) && enum_exists($propertyType)) {
-                $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
-            }
+        // Logic to convert value objects properties to ValueObject class by string
+        if (is_string($value) && is_a($propertyType, ValueObject::class, true)) {
+            $value = (!empty($value) ? new $propertyType($value) : null);
+        }
 
-            // Logic to force convert boolean values
-            if ($reflectProperty->getType()->getName() === 'bool') {
-                $value = (bool)$value;
-            }
+        // Logic to convert enums to string
+        if (is_int($value) && enum_exists($propertyType)) {
+            $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
+        }
 
-            // Logic to force convert float values
-            if ($reflectProperty->getType()->getName() === 'float') {
-                $value = (float)$value;
-            }
+        // Logic to force convert boolean values
+        if ($propertyType === 'bool') {
+            $value = (bool) $value;
+        }
+
+        // Logic to force convert float values
+        if ($propertyType === 'float') {
+            $value = (float) $value;
         }
 
         $isDateValue = (is_string($value) && (isDateUs($value) || isDateTimeUs($value) || isDateTimeIso($value)));

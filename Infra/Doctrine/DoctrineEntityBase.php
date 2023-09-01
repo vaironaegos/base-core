@@ -66,8 +66,13 @@ abstract class DoctrineEntityBase
             // Logic to convert enums to string
             $reflectObject = new ReflectionClass($this);
             $reflectProperty = $reflectObject->getProperty($field);
-            $propertyType = $reflectProperty->getType()->getName();
             $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
+
+            if ($isUnitType) {
+                $this->$field = $value;
+            }
+
+            $propertyType = $isUnitType ? gettype($this->$field) : $reflectProperty->getType()->getName();
 
             if (!empty($value) && is_array($value) && !$isUnitType) {
                 $propertyType = $reflectProperty->getType()->getName();
