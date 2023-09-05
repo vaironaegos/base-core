@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra;
 
 use AMQPConnectionException;
+use PhpAmqpLib\Channel\AbstractChannel;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
 
@@ -42,5 +44,21 @@ final class RabbitMqConnector
         }
 
         return $this->connection;
+    }
+
+    public function createChannel(): AMQPChannel
+    {
+        if ($this->connection?->channel()->is_open()) {
+            $this->connection->channel()->close();
+        }
+
+        return $this->connection->channel();
+    }
+
+    public function close(): void
+    {
+        $this->connection->close();
+
+        $this->connection = null;
     }
 }
