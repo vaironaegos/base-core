@@ -10,7 +10,7 @@ final class QueueMessage extends DtoBase
 {
     public function __construct(
         public readonly string $queueName,
-        public readonly QueueActions $action,
+        public readonly QueueActions | string $action,
         public readonly array $data,
         protected readonly array $options = []
     ) {
@@ -27,6 +27,7 @@ final class QueueMessage extends DtoBase
 
     public function __toString(): string
     {
-        return json_encode(['action' => $this->action, 'data' => $this->data]);
+        $actionName = is_string($this->action) ? $this->action : $this->action->value;
+        return json_encode(['action' => $actionName, 'data' => $this->data]);
     }
 }

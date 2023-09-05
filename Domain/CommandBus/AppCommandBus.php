@@ -7,19 +7,18 @@ namespace Astrotech\ApiBase\Domain\CommandBus;
 use Astrotech\ApiBase\Adapter\Contracts\Dto;
 use Astrotech\ApiBase\Domain\Contracts\CommandBus;
 use Astrotech\ApiBase\Domain\Contracts\CommandHandler;
+use Astrotech\ApiBase\Domain\Contracts\EventBus;
+use Astrotech\ApiBase\Domain\Contracts\EventStoreRepository;
 use RuntimeException;
 
 final class AppCommandBus implements CommandBus
 {
     public function __construct(
-        private array $handlers,
-        private readonly string $methodName = 'handle'
+        private readonly array $handlers,
+        private readonly EventBus $eventBus,
+        private readonly string $methodName = 'handle',
+        private readonly ?EventStoreRepository $eventStoreRepo = null
     ) {
-    }
-
-    public function registerHandler(string $commandClassName, CommandHandler $handler): void
-    {
-        $this->handlers[$commandClassName] = $handler;
     }
 
     public function dispatch(Dto $command)
@@ -30,8 +29,10 @@ final class AppCommandBus implements CommandBus
             throw new RuntimeException("No handler registered for command '{$commandName}'");
         }
 
-        /** @var object $handler */
+        /** @var CommandHandler $handler */
         $handler = $this->handlers[$commandName];
+        $handler->setEventStoreRepo($this->eventStoreRepo);
+        $handler->setEventBus($this->eventBus);
 
         if (!method_exists($handler, $this->methodName)) {
             throw new RuntimeException(sprintf(
