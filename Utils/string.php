@@ -199,11 +199,11 @@ if (!function_exists('env')) {
         $value = getenv($name);
 
         if (!$value) {
-            $value = $_ENV[$name];
+            $value = $_ENV[$name] ?? false;
         }
 
         if (!$value) {
-            $value = $_SERVER[$name];
+            $value = $_SERVER[$name] ?? false;
         }
 
         return $value ?? $default;
