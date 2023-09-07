@@ -27,7 +27,30 @@ final class QueueMessage extends DtoBase
 
     public function __toString(): string
     {
+        $dataCloned = $this->data;
         $actionName = is_string($this->action) ? $this->action : $this->action->value;
-        return json_encode(['action' => $actionName, 'data' => $this->data]);
+        $eventId = $dataCloned['eventId'] ?? null;
+        $processed = $dataCloned['processed'] ?? null;
+        $createdAt = $dataCloned['createdAt'] ?? null;
+        $eventName = $dataCloned['eventName'] ?? null;
+        $userId = $dataCloned['userId'] ?? null;
+
+        unset(
+            $dataCloned['eventId'],
+            $dataCloned['processed'],
+            $dataCloned['createdAt'],
+            $dataCloned['eventName'],
+            $dataCloned['userId']
+        );
+
+        return json_encode([
+            'eventId' => $eventId,
+            'userId' => $userId,
+            'processed' => $processed,
+            'action' => $actionName,
+            'createdAt' => $createdAt,
+            'eventName' => $eventName,
+            'data' => $dataCloned
+        ]);
     }
 }
