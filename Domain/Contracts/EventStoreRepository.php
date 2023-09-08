@@ -6,5 +6,5 @@ namespace Astrotech\ApiBase\Domain\Contracts;
 
 interface EventStoreRepository
 {
-    public function store(DomainEvent $event): string;
+    public function store(DomainEvent $event): int | string;
 }

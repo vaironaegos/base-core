@@ -16,8 +16,8 @@ final class AppCommandBus implements CommandBus
     public function __construct(
         private readonly array $handlers,
         private readonly EventBus $eventBus,
-        private readonly string $methodName = 'handle',
-        private readonly ?EventStoreRepository $eventStoreRepo = null
+        private readonly ?EventStoreRepository $eventStoreRepo = null,
+        private readonly string $methodName = 'handle'
     ) {
     }
 
