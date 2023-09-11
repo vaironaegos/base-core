@@ -43,4 +43,5 @@ enum QueueActions: string
     case WITHDRAW_APPROVED = 'withdrawApproved';
     case WITHDRAW_REFUSED = 'withdrawRefused';
     case CUSTOMER_BALANCE_CHANGED = 'customerBalanceChanged';
+    case ADMIN_GENERATE_CUSTOMER_FORGOT_PASSWORD_LINK = 'adminGenerateCustomerForgotPasswordLink';
 }
