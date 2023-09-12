@@ -12,6 +12,7 @@ interface DomainEvent
     public function type(): string;
     public function when(): DateTimeImmutable;
     public function values(): array;
+    public function userId(): string | int;
     public function setEventId(string $eventId): void;
     public function setUserId(string $userId): void;
 }

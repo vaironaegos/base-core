@@ -26,13 +26,10 @@ abstract class CommandHandlerBase implements CommandHandler
 
     public function dispatchEvent(DomainEvent $event): void
     {
-        $this->eventBus->dispatch($event);
-
-        if (is_null($this->eventStoreRepo)) {
-            return;
+        if (!is_null($this->eventStoreRepo)) {
+            $this->eventStoreRepo->store($event);
         }
 
-        $eventId = $this->eventStoreRepo->store($event);
-        $event->setEventId($eventId);
+        $this->eventBus->dispatch($event);
     }
 }

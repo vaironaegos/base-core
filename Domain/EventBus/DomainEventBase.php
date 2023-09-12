@@ -6,8 +6,10 @@ namespace Astrotech\ApiBase\Domain\EventBus;
 
 use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
 use DateTimeImmutable;
+use JsonSerializable;
+use Stringable;
 
-abstract class DomainEventBase implements DomainEvent
+abstract class DomainEventBase implements DomainEvent, JsonSerializable, Stringable
 {
     private string $eventId = '';
     private string $userId = '';
@@ -32,6 +34,11 @@ abstract class DomainEventBase implements DomainEvent
         return get_called_class();
     }
 
+    public function userId(): string
+    {
+        return $this->userId;
+    }
+
     public function setEventId(string $eventId): void
     {
         if (!empty($this->eventId)) {
@@ -48,5 +55,15 @@ abstract class DomainEventBase implements DomainEvent
         }
 
         $this->userId = $userId;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->values();
+    }
+
+    public function __toString(): string
+    {
+        return json_encode($this->values());
     }
 }
