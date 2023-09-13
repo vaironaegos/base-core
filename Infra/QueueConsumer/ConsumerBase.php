@@ -24,6 +24,7 @@ abstract class ConsumerBase
     protected AbstractConnection $connection;
     protected string $rawMessageBody;
     protected array $messageBody;
+    protected array $metaBody;
 
     abstract protected function handle(): void;
 
@@ -33,7 +34,8 @@ abstract class ConsumerBase
     ) {
         $this->queueName = $message->getRoutingKey();
         $this->rawMessageBody = $message->getBody();
-        $this->messageBody = json_decode($message->getBody(), true)['data'];
+        $this->metaBody = json_decode($message->getBody(), true);
+        $this->messageBody = $this->metaBody['data'];
         $this->connection = $message->getChannel()->getConnection();
     }
 
