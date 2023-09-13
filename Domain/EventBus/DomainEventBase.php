@@ -6,6 +6,7 @@ namespace Astrotech\ApiBase\Domain\EventBus;
 
 use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
 use DateTimeImmutable;
+use DateTimeInterface;
 use JsonSerializable;
 use Stringable;
 
@@ -13,7 +14,7 @@ abstract class DomainEventBase implements DomainEvent, JsonSerializable, Stringa
 {
     private string $eventId = '';
     private string $userId = '';
-    private bool $processed = false;
+    private ?DateTimeInterface $processedAt = null;
 
     public function when(): DateTimeImmutable
     {
@@ -37,6 +38,16 @@ abstract class DomainEventBase implements DomainEvent, JsonSerializable, Stringa
     public function userId(): string
     {
         return $this->userId;
+    }
+
+    public function processedAt(): ?DateTimeInterface
+    {
+        return $this->processedAt;
+    }
+
+    public function wasProcessed(): bool
+    {
+        return !is_null($this->processedAt);
     }
 
     public function setEventId(string $eventId): void
