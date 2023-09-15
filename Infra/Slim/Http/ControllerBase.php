@@ -24,6 +24,8 @@ abstract class ControllerBase
     protected array $meta = [];
     protected static array $loggedUser = [];
 
+    abstract public function handle(Request $request): array;
+
     /**
      * @param Request $request
      * @param Response $response
@@ -100,6 +102,68 @@ abstract class ControllerBase
         }
     }
 
+    protected function queryParam(string $name, string $default = null): mixed
+    {
+        $params = $this->request->getQueryParams();
+
+        if (isset($params[$name]) && is_string($params[$name])) {
+            return trim($params[$name]);
+        }
+
+        if (isset($params[$name]) && ctype_digit($params[$name])) {
+            return floatval($params[$name]);
+        }
+
+        if (isset($params[$name]) && is_bool($params[$name])) {
+            return convertToBool($params[$name]);
+        }
+
+        return $default;
+    }
+
+    protected function post(string $name = null, string $default = null): mixed
+    {
+        $parsedBody = $this->request->getParsedBody();
+
+        if (isset($parsedBody[$name]) && is_string($parsedBody[$name])) {
+            return trim($parsedBody[$name]);
+        }
+
+        if (isset($parsedBody[$name]) && is_bool($parsedBody[$name])) {
+            return convertToBool($parsedBody[$name]);
+        }
+
+        if (isset($parsedBody[$name]) && ctype_digit((string)$parsedBody[$name])) {
+            return $parsedBody[$name];
+        }
+
+        return $default;
+    }
+
+    protected function allPost(): array
+    {
+        $parsedBody = array_keys($this->request->getParsedBody() ?? []);
+        $data = [];
+
+        foreach ($parsedBody as $name) {
+            $data[$name] = $this->post($name);
+        }
+
+        return $data;
+    }
+
+    protected function allQueryParams(): array
+    {
+        $params = array_keys($this->request->getQueryParams() ?? []);
+        $data = [];
+
+        foreach ($params as $name) {
+            $data[$name] = $this->queryParam($name);
+        }
+
+        return $data;
+    }
+
     private function parseBody(): void
     {
         $contentType = $this->request->getHeaderLine('Content-Type');
@@ -116,8 +180,6 @@ abstract class ControllerBase
 
         $this->request->withParsedBody($contents);
     }
-
-    abstract public function handle(Request $request): array;
 
     protected function getLoggedUser(): array
     {

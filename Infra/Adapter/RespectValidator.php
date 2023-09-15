@@ -14,35 +14,31 @@ use Astrotech\ApiBase\Adapter\Contracts\ValidatorInterface;
  */
 final class RespectValidator implements ValidatorInterface
 {
-    public static function validateBatch(array $value, array $validationRules): void
+    public static function validate(string $field, mixed $value, string $validationRule): void
     {
-        foreach ($validationRules as $field => $rules) {
-            foreach ($rules as $rule2) {
-                if (str_contains($rule2, 'enum:')) {
-                    [$rule, $class] = explode(':', $rule2);
-                    $isValid = $class::tryFrom($value[$field]);
-                    if (!$isValid) {
-                        throw new ValidationException(['field' => $field, 'error' => 'validation.' . $rule2]);
-                    }
+        $rules = explode('|', $validationRule);
+        foreach ($rules as $rule2) {
+            if (str_contains($rule2, 'enum:')) {
+                $rule2 = str_replace('enum:', '', $rule2);
+                if ($rule2::tryFrom($value)) {
                     continue;
                 }
+                throw new ValidationException(['field' => $field, 'error' => 'validation.enum', 'value' => $value]);
+            }
 
-                $isValid = Validator::{$rule2}()->validate($value[$field]);
-                if (!$isValid) {
-                    throw new ValidationException(['field' => $field, 'error' => 'validation.' . $rule2]);
-                }
+            if (!Validator::{$rule2}()->validate($value)) {
+                throw new ValidationException(['field' => $field, 'error' => "validation.{$rule2}", 'value' => $value]);
             }
         }
     }
 
-    public static function validate(string $field, mixed $value, string $validationRules): void
+    public static function validateBatch(array $values, array $validationRules): void
     {
-        $rules = explode('|', $validationRules);
-        foreach ($rules as $rule2) {
-            $isValid = Validator::{$rule2}()->validate($value);
-            if (!$isValid) {
-                throw new ValidationException(['field' => $field, 'error' => 'validation.' . $rule2]);
+        foreach ($validationRules as $fieldName => $ruleList) {
+            if (!isset($values[$fieldName])) {
+                throw new ValidationException(['field' => $fieldName, 'error' => 'validation.fieldNotExists']);
             }
+            static::validate($fieldName, $values[$fieldName], implode('|', $ruleList));
         }
     }
 }

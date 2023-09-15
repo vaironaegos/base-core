@@ -24,79 +24,116 @@ abstract class ConsumerBase
     protected AbstractConnection $connection;
     protected string $rawMessageBody;
     protected array $messageBody;
+    protected array $metaBody;
 
     abstract protected function handle(): void;
 
     public function __construct(
         protected readonly ContainerInterface $container,
-        protected readonly AMQPMessage $message
+        protected readonly AMQPMessage $message,
+        protected readonly string $traceId,
     ) {
         $this->queueName = $message->getRoutingKey();
         $this->rawMessageBody = $message->getBody();
-        $this->messageBody = json_decode($message->getBody(), true)['data'];
+        $this->metaBody = json_decode($message->getBody(), true);
+        $this->messageBody = $this->metaBody['data'];
         $this->connection = $message->getChannel()->getConnection();
     }
 
     public function execute(): void
     {
-        $logfilePath = LOGS_PATH . "/{$this->queueName}-consumer.log";
-        $prefix = "[" . uniqid() . " | queue: {$this->queueName}]";
-
-        if (!is_dir(LOGS_PATH)) {
-            mkdir(LOGS_PATH);
-        }
-
         /** @var LogSystem $logSystem */
         $logSystem = $this->container->get(LogSystem::class);
         $handlerName = get_called_class();
-        $logMessage = "{$prefix} Starting handler {$handlerName}" . PHP_EOL . $this->rawMessageBody . PHP_EOL;
-        $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-        echo $logMessage;
+
+        $logSystem->trace(
+            json_encode(['handler' => $handlerName, 'queue' => $this->queueName, 'message' => $this->messageBody]),
+            ['category' => $this->traceId]
+        );
 
         try {
             $this->handle();
-            $logMessage = "{$prefix} Message processed Successfully!" . PHP_EOL;
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+
+            $logSystem->trace(
+                json_encode(['handler' => $handlerName, 'message' => 'Message processed Successfully!']),
+                ['category' => $this->traceId]
+            );
 
             if ($this->message->getChannel()->is_open()) {
                 $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
             }
         } catch (AMQPEmptyDeliveryTagException $e) {
-            $logMessage = "{$prefix} Nonexistent Delivery Tag! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Nonexistent Delivery Tag! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
         } catch (AMQPRuntimeException | AMQPProtocolException | AMQPConnectionClosedException $e) {
-            $logMessage = "{$prefix} AMQP Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "AMQP Error! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (DriverException $e) {
-            $logMessage = "{$prefix} Database Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}" .
-                PHP_EOL . $e->getQuery()->getSQL();
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Database Error! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'sql' => $e->getQuery()->getSQL(),
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
             sleep(2);
-            echo $logMessage;
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (RequestException | ConnectException $e) {
-            $logMessage = "{$prefix} Request Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Request Error! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
+
             if ($this->message->getChannel()->is_open()) {
                 $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
             }
         } catch (ConsumerException $e) {
-            $logMessage = "{$prefix} Consumer Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Consumer Error! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
 
             if ($this->message->getChannel()->is_open()) {
                 $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
             }
         } catch (Throwable $e) {
-            $logMessage = "{$prefix} Generic Error! {$e->getMessage()} - {$e->getFile()}:{$e->getLine()}";
-            $logSystem->debug($logMessage, ['filename' => $logfilePath]);
-            echo $logMessage;
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Generic Error! {$e->getMessage()}",
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ]),
+                ['category' => $this->traceId]
+            );
         }
     }
 }

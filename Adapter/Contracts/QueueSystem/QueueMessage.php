@@ -10,7 +10,7 @@ final class QueueMessage extends DtoBase
 {
     public function __construct(
         public readonly string $queueName,
-        public readonly QueueActions $action,
+        public readonly QueueActions | string $action,
         public readonly array $data,
         protected readonly array $options = []
     ) {
@@ -27,6 +27,30 @@ final class QueueMessage extends DtoBase
 
     public function __toString(): string
     {
-        return json_encode(['action' => $this->action, 'data' => $this->data]);
+        $dataCloned = $this->data;
+        $actionName = is_string($this->action) ? $this->action : $this->action->value;
+        $eventId = $dataCloned['eventId'] ?? null;
+        $processed = $dataCloned['processed'] ?? null;
+        $createdAt = $dataCloned['createdAt'] ?? null;
+        $eventName = $dataCloned['eventName'] ?? null;
+        $userId = $dataCloned['userId'] ?? null;
+
+        unset(
+            $dataCloned['eventId'],
+            $dataCloned['processed'],
+            $dataCloned['createdAt'],
+            $dataCloned['eventName'],
+            $dataCloned['userId']
+        );
+
+        return json_encode([
+            'eventId' => $eventId,
+            'userId' => $userId,
+            'processed' => $processed,
+            'action' => $actionName,
+            'createdAt' => $createdAt,
+            'eventName' => $eventName,
+            'data' => $dataCloned
+        ]);
     }
 }

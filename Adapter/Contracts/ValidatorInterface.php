@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Adapter\Contracts;
 
+use Astrotech\ApiBase\Exception\ValidationException;
+
 interface ValidatorInterface
 {
-    public static function validateBatch(array $value, array $validationRules): void;
+    /**
+     * @throws ValidationException
+     */
+    public static function validate(string $field, mixed $value, string $validationRule): void;
 
-    public static function validate(string $field, mixed $value, string $validationRules): void;
+    /**
+     * @throws ValidationException
+     */
+    public static function validateBatch(array $values, array $validationRules): void;
 }
