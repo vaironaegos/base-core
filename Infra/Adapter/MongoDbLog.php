@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Adapter;
 
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\ApiBase\Domain\Contracts\LogRepository;
 use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
 use DateTimeImmutable;
-use MongoDB\Client as MongoDbClient;
 
 final class MongoDbLog implements LogSystem
 {
-    private string $collectionName = 'logs';
     private string $defaultCategory = 'default';
 
     public function __construct(
-        private readonly MongoDbClient $mongoDbClient
+        private readonly LogRepository $logRepository
     ) {
     }
 
@@ -57,11 +56,7 @@ final class MongoDbLog implements LogSystem
 
     private function persistLog(string $category, LogLevelEnum $level, string $message): void
     {
-        /** @var MongoDB\Collection $collection */
-        $dbName = config('queryDb.dbname');
-        $collection = $this->mongoDbClient->{$dbName}->{$this->collectionName};
-
-        $collection->insertOne([
+        $this->logRepository->insert([
             'ip' => getRealIp(),
             'category' => $category,
             'level' => $level->value,
