@@ -8,6 +8,8 @@ use MongoDB\BSON\Regex;
 
 trait DoctrineOdmSearcheable
 {
+    private InputData $inputData;
+
     /**
      * Operators to be used in request query string:
      * - eq (=)
@@ -21,16 +23,19 @@ trait DoctrineOdmSearcheable
      * - gte (>=)
      * - btw (BETWEEN)
      *
+     * @param InputData $inputData
      * @return void
      * @see https://www.yiiframework.com/doc/guide/2.0/en/rest-filtering-collections#filtering-request
      */
     public function processSearch(InputData $inputData): void
     {
-        if (empty($inputData->filters)) {
+        $this->inputData = $inputData;
+
+        if (empty($this->inputData->filters)) {
             return;
         }
 
-        foreach ($inputData->filters as $column => $param) {
+        foreach ($this->inputData->filters as $column => $param) {
             if (empty($param)) {
                 continue;
             }
@@ -45,33 +50,49 @@ trait DoctrineOdmSearcheable
                     }
 
                     if ($operator === SearchOperator::LIKE) {
-                        $inputData->builder->field($column)->equals(
-                            new Regex("^" . preg_quote($value, '/') . ".*", "i")
-                        );
+                        $this->applyLikeOperator($column, $value);
                         continue;
                     }
 
                     if ($operator === SearchOperator::IN) {
-                        $inputData->builder->field($column)->in([$value]);
+                        $this->applyInOperator($column, explode(',', $value));
                         continue;
                     }
 
                     if ($operator === SearchOperator::BETWEEN) {
-                        [$date1, $date2] = explode(',', $value);
-                        $date1 .= ' 00:00:00';
-                        $date2 .= ' 23:59:59';
-                        $inputData->builder->field($column)
-                            ->gte($date1)
-                            ->lte($date2);
-                        continue;
+                        [$startDate, $endDate] = explode(',', $value);
+                        $this->applyBetweenOperator($column, $startDate, $endDate);
                     }
                 }
             }
 
             if (is_string($param)) {
-                $inputData->builder->field($column)->equals($param);
-                continue;
+                $this->applyEqualsOperator($column, $param);
             }
         }
+    }
+
+    private function applyLikeOperator(string $column, mixed $value): void
+    {
+        $this->inputData->builder->field($column)->equals(
+            new Regex("^" . preg_quote($value, '/') . ".*", "i")
+        );
+    }
+
+    private function applyInOperator(string $column, array $values): void
+    {
+        $this->inputData->builder->field($column)->in($values);
+    }
+
+    private function applyBetweenOperator(string $column, string $startDate, string $endDate): void
+    {
+        $this->inputData->builder->field($column)
+            ->gte($startDate . ' 00:00:00')
+            ->lte($endDate . ' 23:59:59');
+    }
+
+    private function applyEqualsOperator(string $column, mixed $value): void
+    {
+        $this->inputData->builder->field($column)->equals($value);
     }
 }
