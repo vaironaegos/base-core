@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Doctrine\Paginatable;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
+use MongoDB\BSON\Regex;
 
 trait DoctrineOdmPaginatable
 {
@@ -22,6 +23,7 @@ trait DoctrineOdmPaginatable
         if ($inputData->skipPagination) {
             $this->data = array_map(fn ($data) => $data->toSoftArray(), $totalData);
             $this->paginationData = [];
+
             return;
         }
 
