@@ -6,10 +6,8 @@ namespace Astrotech\ApiBase\Infra\Doctrine\Searcheable;
 
 use MongoDB\BSON\Regex;
 
-trait DoctrineOdmSearcheable
+trait MongoDbSearchable
 {
-    private InputData $inputData;
-
     /**
      * Operators to be used in request query string:
      * - eq (=)
@@ -23,19 +21,17 @@ trait DoctrineOdmSearcheable
      * - gte (>=)
      * - btw (BETWEEN)
      *
-     * @param InputData $inputData
-     * @return void
      * @see https://www.yiiframework.com/doc/guide/2.0/en/rest-filtering-collections#filtering-request
      */
-    public function processSearch(InputData $inputData): void
+    public function processSearch(array $filters = []): array
     {
-        $this->inputData = $inputData;
-
-        if (empty($this->inputData->filters)) {
-            return;
+        if (empty($filters)) {
+            return [];
         }
 
-        foreach ($this->inputData->filters as $column => $param) {
+        $findFilters = [];
+
+        foreach ($filters as $column => $param) {
             if (empty($param)) {
                 continue;
             }
@@ -50,26 +46,28 @@ trait DoctrineOdmSearcheable
                     }
 
                     if ($operator === SearchOperator::LIKE) {
-                        $this->applyLikeOperator($column, $value);
+                        $findFilters[$column] = new Regex("^" . preg_quote($value, '/') . ".*", "i");
                         continue;
                     }
 
                     if ($operator === SearchOperator::IN) {
-                        $this->applyInOperator($column, explode(',', $value));
+                        $findFilters[$column] = ['$in' => explode(',', $value)];
                         continue;
                     }
 
                     if ($operator === SearchOperator::BETWEEN) {
                         [$startDate, $endDate] = explode(',', $value);
-                        $this->applyBetweenOperator($column, $startDate, $endDate);
+                        $findFilters[$column] = ['$gte' => $startDate, '$lte' => $endDate];
                     }
                 }
             }
 
             if (is_string($param)) {
-                $this->applyEqualsOperator($column, $param);
+                $findFilters[$column] = $param;
             }
         }
+
+        return $findFilters;
     }
 
     private function applyLikeOperator(string $column, mixed $value): void

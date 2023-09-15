@@ -9,8 +9,7 @@ use MongoDB\Client as MongoDbClient;
 class InputData extends DtoBase
 {
     public function __construct(
-        protected ?Builder $builder = null,
-        protected ?MongoDbClient $mongoDbClient = null,
+        protected Builder $builder,
         protected readonly array $filters = []
     ) {
     }

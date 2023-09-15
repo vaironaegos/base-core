@@ -11,11 +11,10 @@ use MongoDB\Client as MongoDbClient;
 class InputData extends DtoBase
 {
     public function __construct(
-        protected readonly int $currentPage,
-        protected ?Builder $builder = null,
-        protected ?MongoDbClient $mongoDbClient = null,
-        protected readonly int $perPage = 40,
-        protected readonly bool $skipPagination = false
+        public readonly int $currentPage,
+        public ?Builder $builder = null,
+        public readonly int $perPage = 40,
+        public readonly bool $skipPagination = false
     ) {
     }
 }
