@@ -140,12 +140,16 @@ abstract class ControllerBase
         return $default;
     }
 
-    protected function allPost(): array
+    protected function allPost(array $only = []): array
     {
         $parsedBody = array_keys($this->request->getParsedBody() ?? []);
         $data = [];
 
         foreach ($parsedBody as $name) {
+            if (!in_array($name, $only)) {
+                continue;
+            }
+
             $data[$name] = $this->post($name);
         }
 
