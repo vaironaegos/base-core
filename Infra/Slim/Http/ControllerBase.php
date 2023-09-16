@@ -146,7 +146,7 @@ abstract class ControllerBase
         $data = [];
 
         foreach ($parsedBody as $name) {
-            if (!in_array($name, $only)) {
+            if (!empty($only) && !in_array($name, $only)) {
                 continue;
             }
 
