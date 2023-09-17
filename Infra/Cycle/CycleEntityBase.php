@@ -33,6 +33,11 @@ abstract class CycleEntityBase
                 continue;
             }
 
+            if (is_string($value) && isUuidString($value)) {
+                $data[$key] = Uuid::fromString($value)->getBytes();
+                continue;
+            }
+
             if (is_string($value) && isDateUs($value)) {
                 $data[$key] = new DateTimeImmutable($value . ' 00:00:00');
                 continue;
@@ -162,17 +167,17 @@ abstract class CycleEntityBase
     {
         $propertyList = get_object_vars($this);
 
-//        foreach ($propertyList as $key => $value) {
-//            if ($value instanceof CycleEntityBase) {
-//                if (!is_resource($value->id)) {
-//                    continue;
-//                }
-//
+        foreach ($propertyList as $key => $value) {
+            if ($value instanceof CycleEntityBase) {
+                if (isUuidString($value->id)) {
+                    $value->id = Uuid::fromString($value->id)->getBytes();
+                }
+
 //                fseek($value->id, 0);
 //                $value->id = stream_get_contents($value->id);
-//                $value->prepare();
-//            }
-//        }
+                $value->prepare();
+            }
+        }
 
         return $this;
     }

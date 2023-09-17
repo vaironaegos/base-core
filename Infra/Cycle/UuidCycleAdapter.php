@@ -30,13 +30,17 @@ class UuidCycleAdapter implements ValueInterface
     public static function typecast($value, DatabaseInterface $db): string
     {
         if (isUuidString($value)) {
+            self::$id = Uuid::fromString($value)->getBytes();
             return Uuid::fromString($value)->getBytes();
         }
 
         if (is_int($value)) {
-            return Uuid::uuid4()->getBytes();
-        }
+            self::$id = Uuid::uuid4()->getBytes();
 
-        return Uuid::fromBytes((string)$value)->toString();
+            return self::$id;
+        }
+        self::$id = Uuid::fromBytes((string)$value)->toString();
+        return self::$id;
+
     }
 }
