@@ -84,7 +84,7 @@ final class JwtTools
         try {
             return JWT::decode($token, new Key($this->secretKey, $this->algorithm));
         } catch (ExpiredException $e) {
-            throw new ExpiredException('Authentication token is expired.');
+            throw new ExpiredException('Authentication token is expired.', 401);
         }
     }
 
