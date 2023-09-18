@@ -38,7 +38,6 @@ final class QueueMessage extends DtoBase
         unset(
             $dataCloned['eventId'],
             $dataCloned['processed'],
-            $dataCloned['createdAt'],
             $dataCloned['eventName'],
             $dataCloned['userId']
         );
