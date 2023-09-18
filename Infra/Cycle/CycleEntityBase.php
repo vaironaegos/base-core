@@ -8,6 +8,7 @@ use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Table\Index;
 use Cycle\Database\Schema\Attribute\ColumnAttribute;
+use Cycle\ORM\RelationMap;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Ramsey\Uuid\Uuid;
@@ -22,7 +23,7 @@ abstract class CycleEntityBase
         name: 'id',
         primary: true,
         nullable: false,
-        typecast: UuidCycleAdapter::class,
+        //        typecast: UuidCycleAdapter::class,
     )]
     protected string $id;
 
@@ -104,6 +105,11 @@ abstract class CycleEntityBase
         $this->$name = $value;
     }
 
+    public function __get(string $name)
+    {
+        return $this->$name;
+    }
+
     public function toArray(bool $toSnakeCase = false): array
     {
         $props = [];
@@ -111,6 +117,10 @@ abstract class CycleEntityBase
 
         /** @var int|string|object $value */
         foreach ($propertyList as $prop => $value) {
+            if (str_contains($prop, '__cycle')) {
+                continue;
+            }
+
             if ($value instanceof DateTimeInterface) {
                 //$propertyList[$prop] = $value->format(DATE_ATOM);
                 $propertyList[$prop] = $value->format('Y-m-d H:i:s');
@@ -146,6 +156,10 @@ abstract class CycleEntityBase
         }
 
         foreach ($propertyList as $name => $value) {
+            if (str_contains($name, '__cycle')) {
+                continue;
+            }
+
             if ($toSnakeCase) {
                 $name = camelCaseToUnderscores($name);
             }
@@ -153,7 +167,7 @@ abstract class CycleEntityBase
             $props[$name] = $value;
         }
 
-        $props['id'] = $this->id;
+        $props['id'] = $this->getId();
 
         return $props;
     }
@@ -161,6 +175,11 @@ abstract class CycleEntityBase
     public function setId(mixed $id): void
     {
         $this->id = $id;
+    }
+
+    public function getId(): string
+    {
+        return Uuid::fromBytes($this->id)->toString();
     }
 
     public function prepare(): self
