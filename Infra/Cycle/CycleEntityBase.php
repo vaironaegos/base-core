@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Cycle;
 
 use Astrotech\ApiBase\Domain\Contracts\ValueObject;
+use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Table\Index;
 use Cycle\Database\Schema\Attribute\ColumnAttribute;
 use Cycle\ORM\RelationMap;
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Ramsey\Uuid\Uuid;
@@ -182,6 +184,24 @@ abstract class CycleEntityBase
     public function getId(): string
     {
         return Uuid::fromBytes($this->id)->toString();
+    }
+
+    public function prePersist(): void
+    {
+        if (property_exists($this, 'createdAt') && empty($this->createdAt)) {
+            $now = new DateTime();
+            $this->createdAt = $now;
+        }
+
+        $loggedUser = ControllerBase::loggedUser();
+        if (property_exists($this, 'createdBy')) {
+            if (property_exists($this, 'firstName')) {
+                $this->createdBy = $this->firstName . " [{$this->getId()}]";
+                return;
+            }
+
+            $this->createdBy = $loggedUser['firstName'] . " [{$loggedUser['id']}]";
+        }
     }
 
 //    public function prepare(): self
