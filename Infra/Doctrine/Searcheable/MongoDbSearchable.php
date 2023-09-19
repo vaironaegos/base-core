@@ -68,7 +68,7 @@ trait MongoDbSearchable
             }
 
             if (is_string($param)) {
-                $findFilters[$column] = match($param) {
+                $findFilters[$column] = match ($param) {
                     !is_numeric($param) => $param,
                     default => intval($param)
                 };
