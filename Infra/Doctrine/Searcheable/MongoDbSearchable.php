@@ -32,7 +32,7 @@ trait MongoDbSearchable
         $findFilters = [];
 
         foreach ($filters as $column => $param) {
-            if (empty($param)) {
+            if ($param === '') {
                 continue;
             }
 
@@ -55,6 +55,11 @@ trait MongoDbSearchable
                         continue;
                     }
 
+                    if ($operator === SearchOperator::EQUAL) {
+                        $findFilters[$column] = ['$eq' => $value];
+                        continue;
+                    }
+
                     if ($operator === SearchOperator::BETWEEN) {
                         [$startDate, $endDate] = explode(',', $value);
                         $findFilters[$column] = ['$gte' => $startDate, '$lte' => $endDate];
@@ -63,7 +68,10 @@ trait MongoDbSearchable
             }
 
             if (is_string($param)) {
-                $findFilters[$column] = $param;
+                $findFilters[$column] = match($param) {
+                    !is_numeric($param) => $param,
+                    default => intval($param)
+                };
             }
         }
 
