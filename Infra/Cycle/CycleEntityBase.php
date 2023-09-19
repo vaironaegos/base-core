@@ -22,8 +22,7 @@ abstract class CycleEntityBase
         type: 'varbinary(16)',
         name: 'id',
         primary: true,
-        nullable: false,
-        //        typecast: UuidCycleAdapter::class,
+        nullable: false
     )]
     protected string $id;
 
@@ -133,6 +132,9 @@ abstract class CycleEntityBase
             }
 
             if ($value instanceof CycleEntityBase) {
+                if (isset($propertyList[$prop.'_id'])) {
+                    unset($propertyList[$prop.'_id']);
+                }
                 $propertyList[$prop] = $value->toArray();
                 continue;
             }
@@ -182,22 +184,20 @@ abstract class CycleEntityBase
         return Uuid::fromBytes($this->id)->toString();
     }
 
-    public function prepare(): self
-    {
-        $propertyList = get_object_vars($this);
-
-        foreach ($propertyList as $key => $value) {
-            if ($value instanceof CycleEntityBase) {
-                if (isUuidString($value->id)) {
-                    $value->id = Uuid::fromString($value->id)->getBytes();
-                }
-
-//                fseek($value->id, 0);
-//                $value->id = stream_get_contents($value->id);
-                $value->prepare();
-            }
-        }
-
-        return $this;
-    }
+//    public function prepare(): self
+//    {
+//        $propertyList = get_object_vars($this);
+//
+//        foreach ($propertyList as $key => $value) {
+//            if ($value instanceof CycleEntityBase) {
+//                if (isUuidString($value->id)) {
+//                    $value->id = Uuid::fromString($value->id)->getBytes();
+//                }
+//
+//                $value->prepare();
+//            }
+//        }
+//
+//        return $this;
+//    }
 }
