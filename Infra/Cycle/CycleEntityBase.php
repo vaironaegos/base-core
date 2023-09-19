@@ -195,7 +195,7 @@ abstract class CycleEntityBase
 
         $loggedUser = ControllerBase::loggedUser();
         if (property_exists($this, 'createdBy')) {
-            if (property_exists($this, 'firstName')) {
+            if (!$loggedUser && property_exists($this, 'firstName')) {
                 $this->createdBy = $this->firstName . " [{$this->getId()}]";
                 return;
             }
