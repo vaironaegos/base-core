@@ -55,7 +55,7 @@ final class MongoDbLogRepository implements LogRepository
     public function insert(array $data): string|int
     {
         $insertId = $this->collection->insertOne($data);
-        return $insertId->getInsertedId();
+        return (string)$insertId->getInsertedId();
     }
 
     private function toArray(Cursor $cursor): array
