@@ -85,6 +85,10 @@ abstract class DoctrineEntityBase
                 $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
             }
 
+            if (is_string($value)) {
+                $value = trim($value);
+            }
+
             $this->$field = $value;
         }
     }
