@@ -89,7 +89,7 @@ abstract class ConsumerBase
                     'handler' => $handlerName,
                     'message' => "Database Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
-                    'sql' => $e->getQuery()->getSQL(),
+                    'sql' => $e->getQuery()?->getSQL(),
                     'stackTrace' => $e->getTrace()
                 ]),
                 ['category' => $this->traceId]
