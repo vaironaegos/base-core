@@ -9,6 +9,7 @@ use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Table\Index;
 use Cycle\Database\Schema\Attribute\ColumnAttribute;
+use Cycle\ORM\Mapper\Proxy\EntityProxyTrait;
 use Cycle\ORM\RelationMap;
 use DateTime;
 use DateTimeImmutable;
@@ -134,8 +135,8 @@ abstract class CycleEntityBase
             }
 
             if ($value instanceof CycleEntityBase) {
-                if (isset($propertyList[$prop.'_id'])) {
-                    unset($propertyList[$prop.'_id']);
+                if (isset($propertyList[$prop . '_id'])) {
+                    unset($propertyList[$prop . '_id']);
                 }
                 $propertyList[$prop] = $value->toArray();
                 continue;
@@ -161,6 +162,10 @@ abstract class CycleEntityBase
 
         foreach ($propertyList as $name => $value) {
             if (str_contains($name, '__cycle')) {
+                continue;
+            }
+
+            if (str_contains($name, '_id')) {
                 continue;
             }
 
