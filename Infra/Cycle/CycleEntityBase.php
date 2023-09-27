@@ -51,7 +51,7 @@ abstract class CycleEntityBase
             }
         }
 
-        $this->id = !empty($data['id']) && empty($this->id) ?
+        $this->id = !empty($data['id']) && empty($this->id) && isUuidString($data['id']) ?
             Uuid::fromString($data['id'])->getBytes() :
             Uuid::uuid4()->getBytes();
 
@@ -91,6 +91,10 @@ abstract class CycleEntityBase
                 $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
             }
 
+            if (is_string($value)) {
+                $value = trim($value);
+            }
+
             $this->$field = $value;
         }
     }
@@ -112,8 +116,14 @@ abstract class CycleEntityBase
         return $this->$name;
     }
 
-    public function toArray(bool $toSnakeCase = false): array
+    public function toArray(bool $toSnakeCase = false, ?int $limit = 1, int $index = 0): array
     {
+        $index++;
+
+        if (!is_null($limit) && $index > $limit) {
+            return [];
+        }
+
         $props = [];
         $propertyList = get_object_vars($this);
 
@@ -138,12 +148,18 @@ abstract class CycleEntityBase
                 if (isset($propertyList[$prop . '_id'])) {
                     unset($propertyList[$prop . '_id']);
                 }
+
                 $propertyList[$prop] = $value->toArray();
                 continue;
             }
 
             if (is_object($value) && enum_exists($value::class)) {
                 $propertyList[$prop] = (!empty($value) ? $value->value : null);
+                continue;
+            }
+
+            if (is_string($value)) {
+                $propertyList[$prop] = trim($value);
                 continue;
             }
 
@@ -188,6 +204,9 @@ abstract class CycleEntityBase
 
     public function getId(): string
     {
+        if (isUuidString($this->id)) {
+            return $this->id;
+        }
         return Uuid::fromBytes($this->id)->toString();
     }
 
