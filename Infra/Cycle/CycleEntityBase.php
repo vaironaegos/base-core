@@ -9,8 +9,6 @@ use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Table\Index;
 use Cycle\Database\Schema\Attribute\ColumnAttribute;
-use Cycle\ORM\Mapper\Proxy\EntityProxyTrait;
-use Cycle\ORM\RelationMap;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -113,8 +111,19 @@ abstract class CycleEntityBase
 
     public function __get(string $name)
     {
+        if (str_contains($name, '_')) {
+            [$a, $attribute] = explode('_', $name);
+            return $this->$attribute;
+        }
+
         return $this->$name;
     }
+
+    public function get(string $name)
+    {
+        return $this->$name;
+    }
+
 
     public function toArray(bool $toSnakeCase = false, ?int $limit = 1, int $index = 0): array
     {
