@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Slim\Http;
 
+use Cycle\Database\Exception\StatementException;
 use Error;
 use Throwable;
 use InvalidArgumentException;

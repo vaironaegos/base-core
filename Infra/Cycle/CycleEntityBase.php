@@ -24,8 +24,8 @@ abstract class CycleEntityBase
     #[Column(
         type: 'varbinary(16)',
         name: 'id',
-        primary: true,
-        nullable: false
+        nullable: false,
+        primary: true
     )]
     protected string $id;
 
@@ -51,8 +51,8 @@ abstract class CycleEntityBase
             }
         }
 
-        $this->id = !empty($data['id']) && empty($this->id) && isUuidString($data['id']) ?
-            Uuid::fromString($data['id'])->getBytes() :
+        $this->id = !empty($data['id']) && empty($this->id) ?
+            $data['id'] :
             Uuid::uuid4()->getBytes();
 
         $this->fill($data);
@@ -210,7 +210,7 @@ abstract class CycleEntityBase
         return Uuid::fromBytes($this->id)->toString();
     }
 
-    public function prePersist(): void
+    public function prepare()
     {
         if (property_exists($this, 'createdAt') && empty($this->createdAt)) {
             $now = new DateTime();
@@ -219,29 +219,35 @@ abstract class CycleEntityBase
 
         $loggedUser = ControllerBase::loggedUser();
         if (property_exists($this, 'createdBy')) {
-            if (!$loggedUser && property_exists($this, 'firstName')) {
-                $this->createdBy = $this->firstName . " [{$this->getId()}]";
-                return;
+            $this->createdBy = $loggedUser ?
+                $loggedUser['firstName'] . " [{$loggedUser['id']}]" :
+                $this->firstName . " [{$this->getId()}]";
+
+//            if (!$loggedUser && property_exists($this, 'firstName')) {
+//                $this->createdBy = $this->firstName . " [{$this->getId()}]";
+//                return $this;
+//            }
+        }
+
+        $attributes = clone $this;
+
+        $propertyList = get_object_vars($attributes);
+
+        foreach ($propertyList as $key => $value) {
+            if ($key === 'id') {
+                continue;
             }
 
-            $this->createdBy = $loggedUser['firstName'] . " [{$loggedUser['id']}]";
-        }
-    }
+            if ($value instanceof CycleEntityBase) {
+                if (isUuidString($value->id)) {
+                    $value->id = Uuid::fromString($value->id)->getBytes();
+                }
 
-//    public function prepare(): self
-//    {
-//        $propertyList = get_object_vars($this);
-//
-//        foreach ($propertyList as $key => $value) {
-//            if ($value instanceof CycleEntityBase) {
-//                if (isUuidString($value->id)) {
-//                    $value->id = Uuid::fromString($value->id)->getBytes();
-//                }
-//
-//                $value->prepare();
-//            }
-//        }
-//
-//        return $this;
-//    }
+                $attributes->{$key . '_id'} = $value->id;
+                unset($attributes->$key);
+            }
+        }
+
+        return $attributes;
+    }
 }
