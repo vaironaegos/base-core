@@ -17,9 +17,12 @@ trait DoctrineOdmPaginatable
 
         /** @var Builder $queryTotal */
         $queryTotal = $inputData->builder;
-        $totalData = $queryTotal->getQuery()->getIterator()->toArray();
+        $collection = $queryTotal->getQuery()->getClass();
+        $recordsCount = $queryTotal->getQuery()->getDocumentManager()
+            ->getDocumentCollection($collection->getName())->countDocuments();
 
         if ($inputData->skipPagination) {
+            $totalData = $queryTotal->getQuery()->getIterator()->toArray();
             $this->data = array_map(fn ($data) => $data->toSoftArray(), $totalData);
             $this->paginationData = [];
             return;
@@ -37,8 +40,8 @@ trait DoctrineOdmPaginatable
         $this->paginationData = [
             'current' => $inputData->currentPage,
             'perPage' => $inputData->perPage,
-            'pagesTotalCount' => ceil(count($totalData) / $inputData->perPage),
-            'recordsCount' => count($totalData),
+            'pagesTotalCount' => ceil($recordsCount / $inputData->perPage),
+            'recordsCount' => $recordsCount,
             'count' => count($paginationData)
         ];
     }
