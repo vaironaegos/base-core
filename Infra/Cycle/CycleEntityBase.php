@@ -29,6 +29,10 @@ abstract class CycleEntityBase
 
     public function __construct(?array $data)
     {
+        if (!$data) {
+            return;
+        }
+
         foreach ($data as $key => $value) {
             if (empty($value)) {
                 continue;
@@ -204,6 +208,13 @@ abstract class CycleEntityBase
         $props['id'] = $this->getId();
 
         return $props;
+    }
+
+    public function toViewArray(): array
+    {
+        return [
+            'id'
+        ];
     }
 
     public function setId(mixed $id): void
