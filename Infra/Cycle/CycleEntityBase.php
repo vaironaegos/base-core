@@ -117,7 +117,8 @@ abstract class CycleEntityBase
     {
         if (str_contains($name, '_')) {
             [$a, $attribute] = explode('_', $name);
-            return $this->$attribute;
+
+            return $this->$attribute ?? null;
         }
 
         return $this->$name;
@@ -154,6 +155,21 @@ abstract class CycleEntityBase
 
             if ($value instanceof ValueObject) {
                 $propertyList[$prop] = $value->value();
+                continue;
+            }
+
+            if (is_array($value) && $value[0] instanceof CycleEntityBase) {
+                $newValues = [];
+
+                foreach ($value as $newValue) {
+                    if (isset($propertyList[$prop . '_id'])) {
+                        unset($propertyList[$prop . '_id']);
+                    }
+
+                    $newValues[] = $newValue->toArray();
+                }
+
+                $propertyList[$prop] = $newValues;
                 continue;
             }
 
