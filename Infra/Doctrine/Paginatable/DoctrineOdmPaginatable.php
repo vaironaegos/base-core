@@ -18,8 +18,10 @@ trait DoctrineOdmPaginatable
         /** @var Builder $queryTotal */
         $queryTotal = $inputData->builder;
         $collection = $queryTotal->getQuery()->getClass();
-        $recordsCount = $queryTotal->getQuery()->getDocumentManager()
-            ->getDocumentCollection($collection->getName())->countDocuments();
+//        $recordsCount = $queryTotal->getQuery()->getDocumentManager()
+//            ->getDocumentCollection($collection->getName())->countDocuments();
+
+        $recordsCount = count($queryTotal->getQuery()->getIterator()->toArray());
 
         if ($inputData->skipPagination) {
             $totalData = $queryTotal->getQuery()->getIterator()->toArray();
