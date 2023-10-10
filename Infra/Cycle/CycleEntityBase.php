@@ -8,12 +8,15 @@ use Astrotech\ApiBase\Domain\Contracts\ValueObject;
 use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Table\Index;
-use Cycle\Database\Schema\Attribute\ColumnAttribute;
+use Cycle\ORM\Entity\Behavior;
+use Cycle\ORM\Entity\Behavior\Attribute\Listen;
+use Cycle\ORM\Entity\Behavior\Event\Mapper\Command\OnCreate;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
+use ReflectionProperty;
 use ReflectionUnionType;
 
 #[Index(columns: ['id'], unique: true)]
@@ -158,7 +161,7 @@ abstract class CycleEntityBase
                 continue;
             }
 
-            if (is_array($value) && $value[0] instanceof CycleEntityBase) {
+            if (is_array($value) && isset($value[0]) && $value[0] instanceof CycleEntityBase) {
                 $newValues = [];
 
                 foreach ($value as $newValue) {
@@ -281,6 +284,13 @@ abstract class CycleEntityBase
 
                 $attributes->{$key . '_id'} = $value->id;
                 unset($attributes->$key);
+                continue;
+            }
+
+            if (is_array($value)) {
+                $reflectionProp = new ReflectionProperty($this, $key);
+
+                $anotacoes = $reflectionProp->getDocComment();
             }
         }
 
