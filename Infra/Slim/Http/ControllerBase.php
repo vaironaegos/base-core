@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Slim\Http;
 
 use Error;
+use GuzzleHttp\Exception\ServerException;
 use Throwable;
 use InvalidArgumentException;
 use Doctrine\ORM\Mapping\MappingException;
@@ -72,6 +73,21 @@ abstract class ControllerBase
             ];
 
             return $this->answerError(message: $e->getMessage(), data: $this->meta);
+        } catch (ServerException $e) {
+            $this->meta = [
+                ...$this->meta,
+                'error' => [
+                    'name' => $e->getName(),
+                    'code' => $e->getCode(),
+                    'details' => [],
+                    'file' => $e->getFile() . ':' . $e->getLine(),
+                    'stackTrace' => $e->getTrace()
+                ]
+            ];
+
+            $responsePayload = json_decode($e->getResponse()->getBody()->getContents(), true);
+
+            return $this->answerError(message: $responsePayload, data: $this->meta);
         } catch (RuntimeException $e) {
             $this->meta = [
                 ...$this->meta,
