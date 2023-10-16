@@ -47,3 +47,47 @@ if (!function_exists('sumMultidimensionalArray')) {
         }, 0);
     }
 }
+
+if (!function_exists('arraysAreEqual')) {
+    function arraysAreEqual(array $array1, array $array2, array $ignoreKeys = [])
+    {
+        if (count($array1) !== count($array2)) {
+            return false;
+        }
+
+        foreach ($array1 as $key => $value) {
+            if (in_array($key, $ignoreKeys)) {
+                continue;
+            }
+
+            if (!array_key_exists($key, $array2)) {
+                return false;
+            }
+
+            if (is_array($value)) {
+                if (!arraysAreEqual($value, $array2[$key], $ignoreKeys)) {
+                    return false;
+                }
+            } else {
+                if ($value !== $array2[$key]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}
+
+if (!function_exists('unsetKeyInAssociativeArray')) {
+    function unsetKeyInAssociativeArray(&$array, $keyToUnset)
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                unsetKeyInAssociativeArray($value, $keyToUnset);
+            } elseif ($key === $keyToUnset) {
+                unset($array[$key]);
+            }
+        }
+    }
+}
