@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra;
 
 use AMQPConnectionException;
-use PhpAmqpLib\Channel\AbstractChannel;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
@@ -13,6 +12,9 @@ use PhpAmqpLib\Exception\AMQPChannelClosedException;
 final class RabbitMqConnector
 {
     private ?AMQPStreamConnection $connection = null;
+    private ?AMQPChannel $channel = null;
+    private array $exchanges = [];
+    private array $fanOutExchanges = [];
 
     public function __construct(
         private readonly string $host,
@@ -22,7 +24,7 @@ final class RabbitMqConnector
     ) {
     }
 
-    public function getConnection(): AMQPStreamConnection
+    public function connect(): AMQPStreamConnection
     {
         if ($this->connection) {
             return $this->connection;
@@ -36,6 +38,24 @@ final class RabbitMqConnector
                     $this->username,
                     $this->password
                 );
+
+                if ($this->channel?->is_open()) {
+                    $this->channel->close();
+                }
+
+                $this->channel = $this->connection->channel();
+
+                foreach ($this->fanOutExchanges as $exchangeName) {
+                    $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_FANOUT, false, true, false);
+                }
+
+                foreach ($this->exchanges as $exchangeName => $queueConfig) {
+                    foreach ($queueConfig as $queueData) {
+                        $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_DIRECT, false, true, false);
+                        $this->channel->queue_declare($queueData['queue'], false, true, false, false);
+                        $this->channel->queue_bind($queueData['queue'], $exchangeName, $queueData['routingKey']);
+                    }
+                }
             } catch (AMQPConnectionException | AMQPChannelClosedException $e) {
                 echo $e->getMessage() . PHP_EOL;
                 echo 'Trying to connect again in 1 second.';
@@ -46,19 +66,36 @@ final class RabbitMqConnector
         return $this->connection;
     }
 
-    public function createChannel(): AMQPChannel
+    public function registerExchange(string $exchangeName, array $queues): void
     {
-        if ($this->connection?->channel()->is_open()) {
-            $this->connection->channel()->close();
-        }
+        $this->exchanges[$exchangeName] = $queues;
+    }
 
-        return $this->connection->channel();
+    public function registerFanOutExchange(string $exchangeName): void
+    {
+        $this->fanOutExchanges[] = $exchangeName;
+    }
+
+    public function consume(string $queueName, callable $callback): void
+    {
+        $this->channel->basic_consume(queue: $queueName, callback: $callback);
+
+        while ($this->channel->is_open()) {
+            $this->channel->wait();
+        }
+    }
+
+    public function getChannel(): ?AMQPChannel
+    {
+        return $this->channel;
     }
 
     public function close(): void
     {
-        $this->connection->close();
+        $this->channel->close();
+        $this->channel = null;
 
+        $this->connection->close();
         $this->connection = null;
     }
 }
