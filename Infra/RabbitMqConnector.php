@@ -24,10 +24,10 @@ final class RabbitMqConnector
     ) {
     }
 
-    public function connect(): AMQPStreamConnection
+    public function connect(): void
     {
         if ($this->connection) {
-            return $this->connection;
+            return;
         }
 
         while (is_null($this->connection)) {
@@ -62,8 +62,6 @@ final class RabbitMqConnector
                 sleep(1);
             }
         }
-
-        return $this->connection;
     }
 
     public function registerExchange(string $exchangeName, array $queues): void
@@ -83,6 +81,11 @@ final class RabbitMqConnector
         while ($this->channel->is_open()) {
             $this->channel->wait();
         }
+    }
+
+    public function getConnection(): ?AMQPStreamConnection
+    {
+        return $this->connection;
     }
 
     public function getChannel(): ?AMQPChannel
