@@ -25,6 +25,12 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 continue;
             }
 
+            if (!APP_IS_PRODUCTION && isset($messageBody['data']['automatedTests'])) {
+                $data = json_encode($messageBody, JSON_PRETTY_PRINT);
+                file_put_contents(RUNTIME_PATH . "/automatedTests/{$messageBody['eventId']}.log", $data);
+                continue;
+            }
+
             $logSystem->info(
                 json_encode(
                     ['message' => "'{$actionName}' action matched with '{$routingKeyAction}' Routing Key!"],
