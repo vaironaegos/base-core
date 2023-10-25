@@ -45,8 +45,12 @@ final class RabbitMqConnector
 
                 $this->channel = $this->connection->channel();
 
-                foreach ($this->fanOutExchanges as $exchangeName) {
+                foreach ($this->fanOutExchanges as $exchangeName => $queueList) {
                     $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_FANOUT, false, true, false);
+                    foreach ($queueList as $queueName) {
+                        $this->channel->queue_declare($queueName, false, true, false, false);
+                        $this->channel->queue_bind($queueName, $exchangeName);
+                    }
                 }
 
                 foreach ($this->exchanges as $exchangeName => $queueConfig) {
@@ -69,9 +73,9 @@ final class RabbitMqConnector
         $this->exchanges[$exchangeName] = $queues;
     }
 
-    public function registerFanOutExchange(string $exchangeName): void
+    public function registerFanOutExchange(string $exchangeName, array $queues): void
     {
-        $this->fanOutExchanges[] = $exchangeName;
+        $this->fanOutExchanges[$exchangeName] = $queues;
     }
 
     public function consume(string $queueName, callable $callback): void
