@@ -12,7 +12,6 @@ use Throwable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
 use GuzzleHttp\Exception\RequestException;
-use Doctrine\DBAL\Exception\DriverException;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
@@ -47,7 +46,10 @@ abstract class ConsumerBase
         $handlerName = get_called_class();
 
         $logSystem->trace(
-            json_encode(['handler' => $handlerName, 'queue' => $this->queueName, 'message' => $this->messageBody]),
+            json_encode(
+                ['handler' => $handlerName, 'queue' => $this->queueName, 'message' => $this->messageBody],
+                JSON_PRETTY_PRINT
+            ),
             ['category' => $this->traceId]
         );
 
@@ -55,7 +57,10 @@ abstract class ConsumerBase
             $this->handle();
 
             $logSystem->trace(
-                json_encode(['handler' => $handlerName, 'message' => 'Message processed Successfully!']),
+                json_encode(
+                    ['handler' => $handlerName, 'message' => 'Message processed Successfully!'],
+                    JSON_PRETTY_PRINT
+                ),
                 ['category' => $this->traceId]
             );
 
@@ -69,7 +74,7 @@ abstract class ConsumerBase
                     'message' => "Nonexistent Delivery Tag! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
                     'stackTrace' => $e->getTrace()
-                ]),
+                ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
         } catch (AMQPRuntimeException | AMQPProtocolException | AMQPConnectionClosedException $e) {
@@ -79,22 +84,9 @@ abstract class ConsumerBase
                     'message' => "AMQP Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
                     'stackTrace' => $e->getTrace()
-                ]),
+                ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
-            $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
-        } catch (DriverException $e) {
-            $logSystem->error(
-                json_encode([
-                    'handler' => $handlerName,
-                    'message' => "Database Error! {$e->getMessage()}",
-                    'file' => "{$e->getFile()}:{$e->getLine()}",
-                    'sql' => $e->getQuery() ? $e->getQuery()->getSQL() : '',
-                    'stackTrace' => $e->getTrace()
-                ]),
-                ['category' => $this->traceId]
-            );
-            sleep(2);
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (RequestException | ConnectException $e) {
             $logSystem->error(
@@ -103,7 +95,7 @@ abstract class ConsumerBase
                     'message' => "Request Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
                     'stackTrace' => $e->getTrace()
-                ]),
+                ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
 
@@ -117,7 +109,7 @@ abstract class ConsumerBase
                     'message' => "Consumer Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
                     'stackTrace' => $e->getTrace()
-                ]),
+                ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
 
@@ -131,7 +123,7 @@ abstract class ConsumerBase
                     'message' => "Generic Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
                     'stackTrace' => $e->getTrace()
-                ]),
+                ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
         }

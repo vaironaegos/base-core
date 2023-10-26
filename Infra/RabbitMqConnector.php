@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra;
 
 use AMQPConnectionException;
-use PhpAmqpLib\Channel\AbstractChannel;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
@@ -13,6 +12,9 @@ use PhpAmqpLib\Exception\AMQPChannelClosedException;
 final class RabbitMqConnector
 {
     private ?AMQPStreamConnection $connection = null;
+    private ?AMQPChannel $channel = null;
+    private array $exchanges = [];
+    private array $fanOutExchanges = [];
 
     public function __construct(
         private readonly string $host,
@@ -22,10 +24,10 @@ final class RabbitMqConnector
     ) {
     }
 
-    public function getConnection(): AMQPStreamConnection
+    public function connect(): void
     {
         if ($this->connection) {
-            return $this->connection;
+            return;
         }
 
         while (is_null($this->connection)) {
@@ -36,29 +38,71 @@ final class RabbitMqConnector
                     $this->username,
                     $this->password
                 );
+
+                if ($this->channel?->is_open()) {
+                    $this->channel->close();
+                }
+
+                $this->channel = $this->connection->channel();
+
+                foreach ($this->fanOutExchanges as $exchangeName => $queueList) {
+                    $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_FANOUT, false, true, false);
+                    foreach ($queueList as $queueName) {
+                        $this->channel->queue_declare($queueName, false, true, false, false);
+                        $this->channel->queue_bind($queueName, $exchangeName);
+                    }
+                }
+
+                foreach ($this->exchanges as $exchangeName => $queueConfig) {
+                    foreach ($queueConfig as $queueData) {
+                        $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_DIRECT, false, true, false);
+                        $this->channel->queue_declare($queueData['queue'], false, true, false, false);
+                        $this->channel->queue_bind($queueData['queue'], $exchangeName, $queueData['routingKey']);
+                    }
+                }
             } catch (AMQPConnectionException | AMQPChannelClosedException $e) {
                 echo $e->getMessage() . PHP_EOL;
                 echo 'Trying to connect again in 1 second.';
                 sleep(1);
             }
         }
+    }
 
+    public function registerExchange(string $exchangeName, array $queues): void
+    {
+        $this->exchanges[$exchangeName] = $queues;
+    }
+
+    public function registerFanOutExchange(string $exchangeName, array $queues): void
+    {
+        $this->fanOutExchanges[$exchangeName] = $queues;
+    }
+
+    public function consume(string $queueName, callable $callback): void
+    {
+        $this->channel->basic_consume(queue: $queueName, callback: $callback);
+
+        while ($this->channel->is_open()) {
+            $this->channel->wait();
+        }
+    }
+
+    public function getConnection(): ?AMQPStreamConnection
+    {
         return $this->connection;
     }
 
-    public function createChannel(): AMQPChannel
+    public function getChannel(): ?AMQPChannel
     {
-        if ($this->connection?->channel()->is_open()) {
-            $this->connection->channel()->close();
-        }
-
-        return $this->connection->channel();
+        return $this->channel;
     }
 
     public function close(): void
     {
-        $this->connection->close();
+        $this->channel->close();
+        $this->channel = null;
 
+        $this->connection->close();
         $this->connection = null;
     }
 }
