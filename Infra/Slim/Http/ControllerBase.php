@@ -19,6 +19,7 @@ abstract class ControllerBase
 {
     use AnswerTrait;
 
+    private static Request $sRequest;
     protected Request $request;
     protected Response $response;
     protected array $args;
@@ -36,6 +37,7 @@ abstract class ControllerBase
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
         $this->request = $request;
+        self::$sRequest = $request;
         $this->response = $response;
         $this->args = $args;
 
@@ -212,6 +214,11 @@ abstract class ControllerBase
         self::$loggedUser = json_decode(current($this->request->getHeader('X-SkyEx-User')), true);
 
         return self::$loggedUser;
+    }
+
+    public static function getHeader(string $header)
+    {
+        return self::$sRequest->getHeaderLine($header);
     }
 
     public static function loggedUser(): array
