@@ -19,7 +19,7 @@ abstract class ControllerBase
 {
     use AnswerTrait;
 
-    private static Request $sRequest;
+    private static Request $staticRequest;
     protected Request $request;
     protected Response $response;
     protected array $args;
@@ -37,7 +37,7 @@ abstract class ControllerBase
     public function __invoke(Request $request, Response $response, array $args = []): Response
     {
         $this->request = $request;
-        self::$sRequest = $request;
+        self::$staticRequest = $request;
         $this->response = $response;
         $this->args = $args;
 
@@ -155,7 +155,7 @@ abstract class ControllerBase
             return $parsedBody[$name];
         }
 
-        return $default;
+        return $parsedBody[$name] ?? $default;
     }
 
     protected function allPost(array $only = []): array
@@ -218,7 +218,7 @@ abstract class ControllerBase
 
     public static function getHeader(string $header)
     {
-        return self::$sRequest->getHeaderLine($header);
+        return self::$staticRequest->getHeaderLine($header);
     }
 
     public static function loggedUser(): array
