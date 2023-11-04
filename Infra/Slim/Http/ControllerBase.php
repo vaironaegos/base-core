@@ -151,7 +151,7 @@ abstract class ControllerBase
             return convertToBool($parsedBody[$name]);
         }
 
-        if (isset($parsedBody[$name]) && ctype_digit((string)$parsedBody[$name])) {
+        if (isset($parsedBody[$name]) && !is_array($parsedBody[$name]) && ctype_digit((string)$parsedBody[$name])) {
             return $parsedBody[$name];
         }
 
