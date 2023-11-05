@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
 use Astrotech\ApiBase\Infra\Exception\ConsumerException;
+use Doctrine\DBAL\Exception\DriverException;
 use GuzzleHttp\Exception\ConnectException;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Exception\AMQPEmptyDeliveryTagException;
@@ -116,13 +117,24 @@ abstract class ConsumerBase
             if ($this->message->getChannel()->is_open()) {
                 $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
             }
+        } catch (DriverException $e) {
+            $logSystem->error(
+                json_encode([
+                    'handler' => $handlerName,
+                    'message' => "Database Exception! {$e->getMessage()}",
+                    'query' => $e->getQuery(),
+                    'file' => "{$e->getFile()}:{$e->getLine()}",
+                    'stackTrace' => $e->getTrace()
+                ], JSON_PRETTY_PRINT),
+                ['category' => $this->traceId]
+            );
         } catch (Throwable $e) {
             $logSystem->error(
                 json_encode([
                     'handler' => $handlerName,
                     'message' => "Generic Error! {$e->getMessage()}",
                     'file' => "{$e->getFile()}:{$e->getLine()}",
-                    'stackTrace' => $e->getTrace()
+                    'stackTrace' => $e->getTraceAsString()
                 ], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
