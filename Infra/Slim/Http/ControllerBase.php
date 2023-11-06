@@ -49,7 +49,7 @@ abstract class ControllerBase
             $this->meta = [
                 ...$this->meta,
                 'error' => [
-                    'name' => $e->getName(),
+                    'name' => get_class($e),
                     'code' => $e->getCode(),
                     'details' => $e->details(),
                     'message' => $e->getMessage(),
@@ -63,7 +63,7 @@ abstract class ControllerBase
             $this->meta = [
                 ...$this->meta,
                 'error' => [
-                    'name' => $e->getMessage(),
+                    'name' => get_class($e),
                     'code' => $e->getCode(),
                     'details' => [
                         'sql' => $e->getQuery()->getSQL(),
@@ -79,7 +79,7 @@ abstract class ControllerBase
             $this->meta = [
                 ...$this->meta,
                 'error' => [
-                    'name' => $e->getName(),
+                    'name' => get_class($e),
                     'code' => $e->getCode(),
                     'details' => [],
                     'file' => $e->getFile() . ':' . $e->getLine(),
@@ -94,7 +94,7 @@ abstract class ControllerBase
             $this->meta = [
                 ...$this->meta,
                 'error' => [
-                    'name' => $e->getName(),
+                    'name' => get_class($e),
                     'code' => $e->getCode(),
                     'details' => [],
                     'file' => $e->getFile() . ':' . $e->getLine(),
@@ -107,7 +107,7 @@ abstract class ControllerBase
             $this->meta = [
                 ...$this->meta,
                 'error' => [
-                    'name' => $e::class,
+                    'name' => get_class($e),
                     'message' => $e->getMessage(),
                     'code' => $e->getCode(),
                     'details' => [],

@@ -62,12 +62,17 @@ trait AnswerTrait
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($code->value);
 
-        $newResponse->getBody()->write(json_encode([
+        $jsonData = json_encode([
             'status' => 'error',
             'message' => $message,
             'meta' => $data
-        ]));
+        ]);
 
+        if ($jsonData === false) {
+            $jsonData = json_encode(['status' => 'error', 'message' => $message]);
+        }
+
+        $newResponse->getBody()->write($jsonData);
         return $newResponse;
     }
 }

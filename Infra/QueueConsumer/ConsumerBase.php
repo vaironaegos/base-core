@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
+use Astrotech\ApiBase\Adapter\Contracts\HttpClient;
 use Astrotech\ApiBase\Infra\Exception\ConsumerException;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\DriverException;
