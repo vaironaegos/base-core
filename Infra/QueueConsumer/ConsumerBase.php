@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
-use Astrotech\ApiBase\Adapter\Contracts\HttpClient;
 use Astrotech\ApiBase\Infra\Exception\ConsumerException;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\DriverException;
@@ -19,6 +18,9 @@ use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
+
+use function Sentry\captureException;
+use function Sentry\captureMessage;
 
 abstract class ConsumerBase
 {
@@ -87,6 +89,7 @@ abstract class ConsumerBase
         };
 
         try {
+            throw new \Exception('Teste Exception!');
             $this->handle();
 
             $logSystem->trace(
@@ -102,18 +105,33 @@ abstract class ConsumerBase
             }
         } catch (AMQPEmptyDeliveryTagException $e) {
             $errorHandler($e);
+            if (APP_IS_PRODUCTION) {
+                captureException($e);
+            }
         } catch (AMQPRuntimeException | AMQPProtocolException | AMQPConnectionClosedException $e) {
             $errorHandler($e);
+            if (APP_IS_PRODUCTION) {
+                captureException($e);
+            }
             $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
         } catch (RequestException | ConnectException | ConsumerException $e) {
             $errorHandler($e);
+            if (APP_IS_PRODUCTION) {
+                captureException($e);
+            }
             if ($this->message->getChannel()->is_open()) {
                 $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
             }
         } catch (DriverException $e) {
             $errorHandler($e, ['query' => $e->getQuery()->getSQL(), 'values' => $e->getQuery()->getParams()]);
+            if (APP_IS_PRODUCTION) {
+                captureException($e);
+            }
         } catch (Throwable $e) {
             $errorHandler($e);
+//            if (APP_IS_PRODUCTION) {
+            captureException($e);
+//            }
         }
     }
 }
