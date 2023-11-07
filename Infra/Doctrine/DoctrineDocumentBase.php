@@ -14,16 +14,22 @@ abstract class DoctrineDocumentBase
     /**
      * @ODM\Id(strategy="NONE")
      */
-    protected string $id;
+    protected string $_id;
+
+    /**
+     * @ODM\Field(type="string", name="id")
+     */
+    protected string $id = '';
 
     public function getId(): string
     {
-        return $this->id;
+        return !empty($this->id) ? $this->id : $this->_id;
     }
 
     public function setId(string $id): void
     {
         $this->id = $id;
+        $this->_id = $id;
     }
 
     public function fill(array $data): void
