@@ -14,6 +14,7 @@ abstract class DoctrineDocumentBase
     /**
      * @ODM\Id(strategy="NONE")
      */
+    // phpcs:ignore
     protected string $_id;
 
     /**
