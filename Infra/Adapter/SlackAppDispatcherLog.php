@@ -57,13 +57,13 @@ final class SlackAppDispatcherLog implements LogSystem
                 'ts' => time()
             ]);
 
-            $slackMessage->setHeaderText("[:rotating_light: ERROR] ") . strtoupper(env('APP_NAME'));
+            $slackMessage->setHeaderText("[:rotating_light: ERROR] " . strtoupper(env('APP_NAME')));
             $slackMessage->addAttachment($attachment);
             $slackMessage->dispatch();
             return;
         }
 
-        $slackMessage->setHeaderText("[:rotating_light: ERROR] ") . strtoupper(env('APP_NAME'));
+        $slackMessage->setHeaderText("[:rotating_light: ERROR] " . strtoupper(env('APP_NAME')));
         $slackMessage->addAttachment(new Attachment([
             'color' => '#FF0000',
             'pretext' => "_Type:_ *{$errorData['type']}*",
