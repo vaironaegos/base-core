@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
-use Astrotech\ApiBase\Adapter\Contracts\HttpClient;
 use Astrotech\ApiBase\Infra\Exception\ConsumerException;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\DriverException;
@@ -46,6 +45,7 @@ abstract class ConsumerBase
     {
         /** @var LogSystem $logSystem */
         $logSystem = $this->container->get(LogSystem::class);
+
         $handlerName = get_called_class();
 
         $logSystem->trace(
@@ -56,7 +56,13 @@ abstract class ConsumerBase
             ['category' => $this->traceId]
         );
 
-        $errorHandler = function (Throwable $e, array $details = []) use ($logSystem, $handlerName): void {
+        $errorHandler = function (
+            Throwable $e,
+            array $details = []
+        ) use (
+            $logSystem,
+            $handlerName
+        ): void {
             $data = [
                 'date' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
                 'handler' => $handlerName,
