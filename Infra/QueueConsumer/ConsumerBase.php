@@ -81,7 +81,7 @@ abstract class ConsumerBase
             }
 
             $output = sprintf(
-                "[%s] %s - %s (%s:%s)" . PHP_EOL . "%s",
+                "[%s] %s (%s:%s)" . PHP_EOL . "%s",
                 $handlerName,
                 $e->getMessage(),
                 $e->getFile(),
