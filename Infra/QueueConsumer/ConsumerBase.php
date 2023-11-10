@@ -70,6 +70,7 @@ abstract class ConsumerBase
                 'message' => "{$e->getMessage()}",
                 'file' => "{$e->getFile()}:{$e->getLine()}",
                 'stackTrace' => $e->getTrace(),
+                'queueMessage' => json_encode($this->messageBody),
                 ...$details
             ];
 

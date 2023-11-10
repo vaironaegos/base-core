@@ -74,8 +74,9 @@ final class SlackAppDispatcherLog implements LogSystem
         $slackMessage->addAttachment(new Attachment([
             'color' => '#FF0000',
             'pretext' => "_Type:_ *{$errorData['type']}*",
-            'text' => "*Message*: {$errorData['message']}\n\n_File_: {$errorData['file']}\n\n```" .
-                json_encode($errorData['stackTrace']) . "\n```",
+            'text' => "*Error Message*: {$errorData['message']}\n\n_File_: {$errorData['file']}\n\n" .
+                "Queue Message: \n\n```{$errorData['queueMessage']}\n```\n\n",
+                "StackTrace: \n\n```" . json_encode($errorData['stackTrace']) . "\n```",
             'author' => new AttachmentAuthor(
                 authorName: 'Handler: ' . $errorData['handler'],
                 authorIcon: 'https://w7.pngwing.com/pngs/564/932/png-transparent-robot-logo-shape-encapsulated-postscript-robot-electronics-logo-head-thumbnail.png'
