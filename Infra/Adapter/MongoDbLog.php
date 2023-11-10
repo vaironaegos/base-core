@@ -8,6 +8,7 @@ use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use Astrotech\ApiBase\Domain\Contracts\LogRepository;
 use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
 use DateTimeImmutable;
+use MoisesK\SlackDispatcherPHP\MessageDispatcher;
 
 final class MongoDbLog implements LogSystem
 {
@@ -46,6 +47,9 @@ final class MongoDbLog implements LogSystem
     {
         $category = $options['category'] ?? $this->defaultCategory;
         $this->persistLog($category, LogLevelEnum::ERROR, $message);
+
+        $slackLogDispatcher = new SlackAppDispatcherLog(new MessageDispatcher(config('slack.appHook')));
+        $slackLogDispatcher->error($message, $options);
     }
 
     public function fatal(string $message, array $options = []): void
