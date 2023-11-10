@@ -6,8 +6,7 @@
     "ext-curl": "*",
     "psr/event-dispatcher": "^1.0",
     "psr/http-message": "*",
-    "ramsey/uuid": "^4.1",
-    "moiseskalebe/slack-dispatcher-php": "^1.1"
+    "ramsey/uuid": "^4.1"
   },
   "require-dev": {
     "fakerphp/faker": "^1.9.1",

@@ -8,16 +8,10 @@ use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use MoisesK\SlackDispatcherPHP\Attachment;
 use MoisesK\SlackDispatcherPHP\Dto\AttachmentAuthor;
 use MoisesK\SlackDispatcherPHP\Dto\AttachmentFooter;
-use MoisesK\SlackDispatcherPHP\MessageDispatcher;
-use MoisesK\SlackDispatcherPHP\SlackMessage;
+use MoisesK\SlackDispatcherPHP\SlackAppMessage;
 
 final class SlackAppDispatcherLog implements LogSystem
 {
-    public function __construct(
-        protected MessageDispatcher $dispatcher
-    ) {
-    }
-
     public function debug(string $message, array $options = []): void
     {
         $fileName = $options['filename'] ?? LOGS_PATH .  '/fileLog.log';
@@ -50,6 +44,8 @@ final class SlackAppDispatcherLog implements LogSystem
     {
         $errorData = json_decode($message, true);
 
+        $slackMessage = new SlackAppMessage(env('SLACK_APP_URL'));
+
         if ($errorData === false) {
             $attachment = new Attachment([
                 'color' => '#FF0000',
@@ -61,16 +57,13 @@ final class SlackAppDispatcherLog implements LogSystem
                 'ts' => time()
             ]);
 
-            $slackMessage = new SlackMessage();
-            $slackMessage->setText("[:rotating_light: ERROR] ") . strtoupper(env('APP_NAME'));
+            $slackMessage->setHeaderText("[:rotating_light: ERROR] ") . strtoupper(env('APP_NAME'));
             $slackMessage->addAttachment($attachment);
-
-            $this->dispatcher->send($slackMessage);
+            $slackMessage->dispatch();
             return;
         }
 
-        $slackMessage = new SlackMessage();
-        $slackMessage->setText(":rotating_light: " . strtoupper(env('APP_NAME')));
+        $slackMessage->setHeaderText("[:rotating_light: ERROR] ") . strtoupper(env('APP_NAME'));
         $slackMessage->addAttachment(new Attachment([
             'color' => '#FF0000',
             'pretext' => "_Type:_ *{$errorData['type']}*",
@@ -87,8 +80,7 @@ final class SlackAppDispatcherLog implements LogSystem
             ),
             'ts' => time()
         ]));
-
-        $this->dispatcher->send($slackMessage);
+        $slackMessage->dispatch();
     }
 
     public function fatal(string $message, array $options = []): void
