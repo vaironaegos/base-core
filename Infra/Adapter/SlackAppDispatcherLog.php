@@ -74,7 +74,7 @@ final class SlackAppDispatcherLog implements LogSystem
         $slackMessage->addAttachment(new Attachment([
             'color' => '#FF0000',
             'pretext' => "_Type:_ *{$errorData['type']}*",
-            'text' => "*Message*: {$errorData['message']}\n_File_: {$errorData['file']}\n```" .
+            'text' => "*Message*: {$errorData['message']}\n\n_File_: {$errorData['file']}\n\n```" .
                 json_encode($errorData['stackTrace']) . "\n```",
             'author' => new AttachmentAuthor(
                 authorName: 'Handler: ' . $errorData['handler'],
