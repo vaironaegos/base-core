@@ -12,7 +12,7 @@ use Throwable;
 
 final class RabbitMqConnector
 {
-    private AMQPStreamConnection $connection;
+    private ?AMQPStreamConnection $connection = null;
     private ?AMQPChannel $channel = null;
     private array $exchanges = [];
     private array $fanOutExchanges = [];
@@ -108,6 +108,6 @@ final class RabbitMqConnector
 
     public function isConnected(): bool
     {
-        return $this->connection->isConnected();
+        return $this->connection && $this->connection->isConnected();
     }
 }
