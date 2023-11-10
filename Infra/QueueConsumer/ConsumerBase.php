@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
+use Astrotech\ApiBase\Exception\ValidationException;
 use Astrotech\ApiBase\Infra\Exception\ConsumerException;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\DriverException;
 use GuzzleHttp\Exception\ConnectException;
 use PhpAmqpLib\Connection\AbstractConnection;
-use PhpAmqpLib\Exception\AMQPEmptyDeliveryTagException;
 use Throwable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
@@ -96,26 +96,24 @@ abstract class ConsumerBase
             $this->handle();
 
             $logSystem->trace(
-                json_encode(
-                    ['handler' => $handlerName, 'message' => 'Message processed Successfully!'],
-                    JSON_PRETTY_PRINT
-                ),
+                json_encode(['handler' => $handlerName, 'message' => 'Message processed!'], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
 
-            if ($this->message->getChannel()->is_open()) {
-                $this->message->getChannel()->basic_ack($this->message->getDeliveryTag());
-            }
-        } catch (AMQPEmptyDeliveryTagException $e) {
+            $this->message->ack();
+        } catch (ValidationException $e) {
             $errorHandler($e);
-        } catch (AMQPRuntimeException | AMQPProtocolException | AMQPConnectionClosedException $e) {
+            $this->message->ack();
+        } catch (
+            RequestException
+            | ConnectException
+            | AMQPRuntimeException
+            | AMQPProtocolException
+            | AMQPConnectionClosedException
+            $e
+        ) {
             $errorHandler($e);
-            $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
-        } catch (RequestException | ConnectException | ConsumerException $e) {
-            $errorHandler($e);
-            if ($this->message->getChannel()->is_open()) {
-                $this->message->getChannel()->basic_nack(delivery_tag: $this->message->getDeliveryTag(), requeue: true);
-            }
+            $this->message->nack(true);
         } catch (DriverException $e) {
             $errorHandler($e, ['query' => $e->getQuery()->getSQL(), 'values' => $e->getQuery()->getParams()]);
         } catch (Throwable $e) {

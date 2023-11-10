@@ -8,10 +8,11 @@ use AMQPConnectionException;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
+use Throwable;
 
 final class RabbitMqConnector
 {
-    private ?AMQPStreamConnection $connection = null;
+    private AMQPStreamConnection $connection;
     private ?AMQPChannel $channel = null;
     private array $exchanges = [];
     private array $fanOutExchanges = [];
@@ -26,45 +27,38 @@ final class RabbitMqConnector
 
     public function connect(): void
     {
-        if ($this->connection) {
-            return;
-        }
+        try {
+            $this->connection = new AMQPStreamConnection(
+                $this->host,
+                $this->port,
+                $this->username,
+                $this->password
+            );
 
-        while (is_null($this->connection)) {
-            try {
-                $this->connection = new AMQPStreamConnection(
-                    $this->host,
-                    $this->port,
-                    $this->username,
-                    $this->password
-                );
+            $this->channel = $this->connection->channel();
+            $this->channel->basic_qos(0, 1, false);
 
-                if ($this->channel?->is_open()) {
-                    $this->channel->close();
+            // FanOut Exchange setup
+            foreach ($this->fanOutExchanges as $exchangeName => $queueList) {
+                $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_FANOUT, false, true, false);
+                foreach ($queueList as $queueName) {
+                    $this->channel->queue_declare($queueName, false, true, false, false);
+                    $this->channel->queue_bind($queueName, $exchangeName);
                 }
-
-                $this->channel = $this->connection->channel();
-
-                foreach ($this->fanOutExchanges as $exchangeName => $queueList) {
-                    $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_FANOUT, false, true, false);
-                    foreach ($queueList as $queueName) {
-                        $this->channel->queue_declare($queueName, false, true, false, false);
-                        $this->channel->queue_bind($queueName, $exchangeName);
-                    }
-                }
-
-                foreach ($this->exchanges as $exchangeName => $queueConfig) {
-                    foreach ($queueConfig as $queueData) {
-                        $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_DIRECT, false, true, false);
-                        $this->channel->queue_declare($queueData['queue'], false, true, false, false);
-                        $this->channel->queue_bind($queueData['queue'], $exchangeName, $queueData['routingKey']);
-                    }
-                }
-            } catch (AMQPConnectionException | AMQPChannelClosedException $e) {
-                echo $e->getMessage() . PHP_EOL;
-                echo 'Trying to connect again in 1 second.';
-                sleep(1);
             }
+
+            // Direct Exchange setup
+            foreach ($this->exchanges as $exchangeName => $queueConfig) {
+                foreach ($queueConfig as $queueData) {
+                    $this->channel->exchange_declare($exchangeName, AMQP_EX_TYPE_DIRECT, false, true, false);
+                    $this->channel->queue_declare($queueData['queue'], false, true, false, false);
+                    $this->channel->queue_bind($queueData['queue'], $exchangeName, $queueData['routingKey']);
+                }
+            }
+        } catch (AMQPConnectionException | AMQPChannelClosedException | Throwable $e) {
+            echo $e->getMessage() . PHP_EOL;
+            echo 'Trying to connect again in 1 second.';
+            sleep(1);
         }
     }
 
@@ -80,19 +74,28 @@ final class RabbitMqConnector
 
     public function consume(string $queueName, callable $callback): void
     {
+        if (is_null($this->channel)) {
+            return;
+        }
+
         $this->channel->basic_consume(queue: $queueName, callback: $callback);
+
+        echo "[" . date('Y-m-d H:i:s') . "] App Consumer {$this->channel->getChannelId()} is ready." . PHP_EOL;
 
         while ($this->channel->is_open()) {
             $this->channel->wait();
         }
+
+        echo "[" . date('Y-m-d H:i:s') . "] Closing consumer connection and channel." . PHP_EOL;
+        $this->close();
     }
 
-    public function getConnection(): ?AMQPStreamConnection
+    public function getConnection(): AMQPStreamConnection
     {
         return $this->connection;
     }
 
-    public function getChannel(): ?AMQPChannel
+    public function getChannel(): AMQPChannel
     {
         return $this->channel;
     }
@@ -100,9 +103,11 @@ final class RabbitMqConnector
     public function close(): void
     {
         $this->channel->close();
-        $this->channel = null;
-
         $this->connection->close();
-        $this->connection = null;
+    }
+
+    public function isConnected(): bool
+    {
+        return $this->connection->isConnected();
     }
 }
