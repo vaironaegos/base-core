@@ -116,8 +116,10 @@ abstract class ConsumerBase
             $this->message->nack(true);
         } catch (DriverException $e) {
             $errorHandler($e, ['query' => $e->getQuery()->getSQL(), 'values' => $e->getQuery()->getParams()]);
+            $this->message->nack(true);
         } catch (Throwable $e) {
             $errorHandler($e);
+            $this->message->nack(true);
         }
     }
 }
