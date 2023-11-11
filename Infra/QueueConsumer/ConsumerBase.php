@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
-use Astrotech\ApiBase\Exception\ValidationException;
-use Astrotech\ApiBase\Infra\Exception\ConsumerException;
-use DateTimeImmutable;
-use Doctrine\DBAL\Exception\DriverException;
-use GuzzleHttp\Exception\ConnectException;
-use PhpAmqpLib\Connection\AbstractConnection;
 use Throwable;
+use DateTimeImmutable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use Doctrine\DBAL\Exception\DriverException;
+use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\ApiBase\Exception\ValidationException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 abstract class ConsumerBase

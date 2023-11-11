@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Adapter;
 
+use DateTimeImmutable;
+use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use Astrotech\ApiBase\Domain\Contracts\LogRepository;
-use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
-use DateTimeImmutable;
-    
+
 final class MongoDbLog implements LogSystem
 {
     private string $defaultCategory = 'default';
