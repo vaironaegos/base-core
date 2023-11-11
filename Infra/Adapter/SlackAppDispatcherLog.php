@@ -72,7 +72,8 @@ final class SlackAppDispatcherLog implements LogSystem
                 "StackTrace: \n\n```" . json_encode($errorData['stackTrace']) . "\n```",
             'author' => new AttachmentAuthor(
                 authorName: 'Handler: ' . $errorData['handler'],
-                authorIcon: 'https://w7.pngwing.com/pngs/564/932/png-transparent-robot-logo-shape-encapsulated-postscript-robot-electronics-logo-head-thumbnail.png'
+                authorIcon: 'https://w7.pngwing.com/pngs/564/932/' .
+                'png-transparent-robot-logo-shape-encapsulated-postscript-robot-electronics-logo-head-thumbnail.png'
             ),
             'footer' => new AttachmentFooter(
                 footer: strtoupper(env('APP_NAME')),
