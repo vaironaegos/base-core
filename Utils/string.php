@@ -206,7 +206,7 @@ if (!function_exists('env')) {
             $value = $_SERVER[$name] ?? false;
         }
 
-        return $value ?? $default;
+        return $value !== false ? $value : $default;
     }
 }
 
