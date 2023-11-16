@@ -100,7 +100,6 @@ abstract class ConsumerBase
                 ['category' => $this->traceId]
             );
 
-            $this->message->ack();
         } catch (ValidationException $e) {
             $errorHandler($e);
             $this->message->ack();

@@ -45,6 +45,8 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $handler->execute();
             }
 
+            $message->ack();
+
             $logSystem->info(
                 json_encode(['message' => "The '{$actionName}' handlers finished."], JSON_PRETTY_PRINT),
                 ['category' => $traceId]
