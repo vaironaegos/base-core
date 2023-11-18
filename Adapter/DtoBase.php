@@ -28,30 +28,31 @@ abstract class DtoBase implements Dto, JsonSerializable
 
     public static function createFromArray(array $values): static
     {
+        $newValues = [];
+
         foreach ($values as $property => $value) {
             $reflectObject = new ReflectionClass(get_called_class());
-            if ($reflectObject->hasProperty($property)) {
-                $reflectProperty = $reflectObject->getProperty($property);
+            $newPropertyName = underscoreToCamelCase($property);
 
-                $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
+            if (!$reflectObject->hasProperty($newPropertyName)) {
+                continue;
+            }
 
-                if (!empty($value) && is_array($value) && !$isUnitType) {
-                    $propertyType = $reflectProperty->getType()->getName();
-                    if (is_a($propertyType, Dto::class, true)) {
-                        $value = $propertyType::createFromArray($value);
-                    }
+            $newValues[$newPropertyName] = $value;
+            $reflectProperty = $reflectObject->getProperty($newPropertyName);
+            $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
+
+            if (!empty($value) && is_array($value) && !$isUnitType) {
+                $propertyType = $reflectProperty->getType()->getName();
+                if (is_a($propertyType, Dto::class, true)) {
+                    $value = $propertyType::createFromArray($value);
                 }
             }
 
-            $values[underscoreToCamelCase($property)] = $value;
-
-            if (mb_strstr($property, '_') === false) {
-                continue;
-            }
-            unset($values[$property]);
+            $newValues[$newPropertyName] = $value;
         }
 
-        return new static(...$values);
+        return new static(...$newValues);
     }
 
     /**
