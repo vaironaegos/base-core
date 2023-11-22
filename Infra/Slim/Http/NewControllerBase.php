@@ -82,7 +82,7 @@ abstract class NewControllerBase
             ];
 
             return $this->answerError(message: $e->getMessage(), data: $this->meta);
-        } catch (Throwable|Error|InvalidArgumentException $e) {
+        } catch (Throwable | Error | InvalidArgumentException $e) {
             $this->meta = [
                 ...$this->meta,
                 'error' => [
