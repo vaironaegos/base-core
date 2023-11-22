@@ -99,7 +99,6 @@ abstract class ConsumerBase
                 json_encode(['handler' => $handlerName, 'message' => 'Message processed!'], JSON_PRETTY_PRINT),
                 ['category' => $this->traceId]
             );
-
         } catch (ValidationException $e) {
             $errorHandler($e);
             $this->message->ack();
