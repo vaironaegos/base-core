@@ -42,6 +42,13 @@ final class SlackAppDispatcherLog implements LogSystem
 
     public function error(string $message, array $options = []): void
     {
+        if (!APP_IS_PRODUCTION) {
+            $fileName = $options['filename'] ?? LOGS_PATH .  '/fileLog.log';
+            $output = '[' . date('Y-m-d H:i:s') . '] ERROR: ' . PHP_EOL . $message . PHP_EOL . PHP_EOL;
+            file_put_contents($fileName, $output, FILE_APPEND);
+            return;
+        }
+
         $errorData = json_decode($message, true);
 
         $slackMessage = new SlackAppMessage(env('SLACK_APP_URL'));
