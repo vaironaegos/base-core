@@ -95,11 +95,11 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $errorHandler($e);
                 $message->ack();
             } catch (
-                RequestException
-                | ConnectException
-                | AMQPRuntimeException
-                | AMQPProtocolException
-                | AMQPConnectionClosedException
+            RequestException
+            |ConnectException
+            |AMQPRuntimeException
+            |AMQPProtocolException
+            |AMQPConnectionClosedException
             $e
             ) {
                 $errorHandler($e);
