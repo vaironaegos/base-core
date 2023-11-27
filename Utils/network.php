@@ -90,7 +90,7 @@ if (!function_exists('browserInfo')) {
         }
 
         // finally get the correct version number
-        $known = array('Version', $ub, 'other');
+        $known = ['Version', $ub, 'other'];
         $pattern = '#(?<browser>' . join('|', $known) .
             ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
         $matches = [];

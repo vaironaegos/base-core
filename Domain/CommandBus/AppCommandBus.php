@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain\CommandBus;
 
+use RuntimeException;
 use Astrotech\ApiBase\Adapter\Contracts\Dto;
+use Astrotech\ApiBase\Domain\Contracts\EventBus;
 use Astrotech\ApiBase\Domain\Contracts\CommandBus;
 use Astrotech\ApiBase\Domain\Contracts\CommandHandler;
-use Astrotech\ApiBase\Domain\Contracts\EventBus;
 use Astrotech\ApiBase\Domain\Contracts\EventStoreRepository;
-use RuntimeException;
 
 final class AppCommandBus implements CommandBus
 {

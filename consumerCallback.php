@@ -1,15 +1,17 @@
 <?php
 
-use Astrotech\ApiBase\Exception\ValidationException;
+declare(strict_types=1);
+
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Astrotech\ApiBase\Infra\QueueConsumer\ConsumerBase;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Doctrine\DBAL\Exception\DriverException;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
+use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\ApiBase\Exception\ValidationException;
+use Astrotech\ApiBase\Infra\QueueConsumer\ConsumerBase;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 function processMessage(AMQPMessage $message, ContainerInterface $container): void
@@ -95,12 +97,12 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $errorHandler($e);
                 $message->ack();
             } catch (
-            RequestException
-            |ConnectException
-            |AMQPRuntimeException
-            |AMQPProtocolException
-            |AMQPConnectionClosedException
-            $e
+                RequestException
+                | ConnectException
+                | AMQPRuntimeException
+                | AMQPProtocolException
+                | AMQPConnectionClosedException
+                $e
             ) {
                 $errorHandler($e);
                 $message->nack(true);

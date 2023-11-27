@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra;
 
+use Throwable;
 use AMQPConnectionException;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
-use Throwable;
 
 final class RabbitMqConnector
 {

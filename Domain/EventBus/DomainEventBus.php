@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Domain\EventBus;
 
-use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
 use Astrotech\ApiBase\Domain\Contracts\EventBus;
 use Astrotech\ApiBase\Exception\RuntimeException;
+use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
 
 final class DomainEventBus implements EventBus
 {

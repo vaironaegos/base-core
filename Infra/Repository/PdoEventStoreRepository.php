@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Repository;
 
-use Astrotech\ApiBase\Adapter\Contracts\UuidGenerator;
-use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
-use Astrotech\ApiBase\Domain\Contracts\EventStoreRepository;
 use PDO;
+use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
+use Astrotech\ApiBase\Adapter\Contracts\UuidGenerator;
+use Astrotech\ApiBase\Domain\Contracts\EventStoreRepository;
 
 final class PdoEventStoreRepository implements EventStoreRepository
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\ApiBase\Domain\Contracts\Dto;
 
 use Astrotech\ApiBase\Adapter\DtoBase;

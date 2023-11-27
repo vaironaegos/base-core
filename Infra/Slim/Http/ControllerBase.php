@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Astrotech\ApiBase\Infra\Slim\Http;
 
 use Error;
-use GuzzleHttp\Exception\ServerException;
 use Throwable;
 use InvalidArgumentException;
+use GuzzleHttp\Exception\ServerException;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\DBAL\Exception\DriverException;
 use Astrotech\ApiBase\Exception\RuntimeException;

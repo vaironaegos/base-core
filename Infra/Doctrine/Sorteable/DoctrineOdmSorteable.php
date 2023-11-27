@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\Doctrine\Sorteable;
 
-use Doctrine\ODM\MongoDB\Query\Builder;
-use MongoDB\BSON\Regex;
-
 trait DoctrineOdmSorteable
 {
     public function processSort(InputData $inputData): void
