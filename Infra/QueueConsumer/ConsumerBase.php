@@ -4,19 +4,10 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Infra\QueueConsumer;
 
-use Throwable;
-use DateTimeImmutable;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
-use Doctrine\DBAL\Exception\DriverException;
 use PhpAmqpLib\Connection\AbstractConnection;
-use PhpAmqpLib\Exception\AMQPRuntimeException;
-use PhpAmqpLib\Exception\AMQPProtocolException;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Astrotech\ApiBase\Exception\ValidationException;
-use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 abstract class ConsumerBase
 {
@@ -55,69 +46,11 @@ abstract class ConsumerBase
             ['category' => $this->traceId]
         );
 
-        $errorHandler = function (
-            Throwable $e,
-            array $details = []
-        ) use (
-            $logSystem,
-            $handlerName
-        ): void {
-            $data = [
-                'date' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
-                'handler' => $handlerName,
-                'type' => get_class($e),
-                'message' => "{$e->getMessage()}",
-                'file' => "{$e->getFile()}:{$e->getLine()}",
-                'stackTrace' => $e->getTrace(),
-                'queueMessage' => json_encode($this->messageBody),
-                ...$details
-            ];
+        $this->handle();
 
-            $jsonPayload = json_encode($data, JSON_PRETTY_PRINT);
-
-            if ($jsonPayload !== false) {
-                $logSystem->error($jsonPayload, ['category' => $this->traceId]);
-                return;
-            }
-
-            $output = sprintf(
-                "[%s] %s (%s:%s)" . PHP_EOL . "%s",
-                $handlerName,
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine(),
-                $e->getTraceAsString()
-            );
-
-            $logSystem->error($output, ['category' => $this->traceId]);
-        };
-
-        try {
-            $this->handle();
-
-            $logSystem->trace(
-                json_encode(['handler' => $handlerName, 'message' => 'Message processed!'], JSON_PRETTY_PRINT),
-                ['category' => $this->traceId]
-            );
-        } catch (ValidationException $e) {
-            $errorHandler($e);
-            $this->message->ack();
-        } catch (
-            RequestException
-            | ConnectException
-            | AMQPRuntimeException
-            | AMQPProtocolException
-            | AMQPConnectionClosedException
-            $e
-        ) {
-            $errorHandler($e);
-            $this->message->nack(true);
-        } catch (DriverException $e) {
-            $errorHandler($e, ['query' => $e->getQuery()->getSQL(), 'values' => $e->getQuery()->getParams()]);
-            $this->message->nack(true);
-        } catch (Throwable $e) {
-            $errorHandler($e);
-            $this->message->nack(true);
-        }
+        $logSystem->trace(
+            json_encode(['handler' => $handlerName, 'message' => 'Message processed!'], JSON_PRETTY_PRINT),
+            ['category' => $this->traceId]
+        );
     }
 }

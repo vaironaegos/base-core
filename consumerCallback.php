@@ -1,9 +1,16 @@
 <?php
 
+use Astrotech\ApiBase\Exception\ValidationException;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
 use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
 use Astrotech\ApiBase\Infra\QueueConsumer\ConsumerBase;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use Doctrine\DBAL\Exception\DriverException;
+use PhpAmqpLib\Exception\AMQPRuntimeException;
+use PhpAmqpLib\Exception\AMQPProtocolException;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 function processMessage(AMQPMessage $message, ContainerInterface $container): void
 {
@@ -39,15 +46,72 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 ['category' => $traceId]
             );
 
-            foreach ($handlers as $handlerClassName) {
-                /** @var ConsumerBase $handler */
-                $handler = new $handlerClassName($container, $message, $traceId);
-                $handler->execute();
-            }
-
             try {
+                foreach ($handlers as $handlerClassName) {
+                    $errorHandler = function (
+                        Throwable $e,
+                        array $details = []
+                    ) use (
+                        $logSystem,
+                        $handlerClassName
+                    ): void {
+                        $data = [
+                            'date' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+                            'handler' => $handlerClassName,
+                            'type' => get_class($e),
+                            'message' => "{$e->getMessage()}",
+                            'file' => "{$e->getFile()}:{$e->getLine()}",
+                            'stackTrace' => $e->getTrace(),
+                            'queueMessage' => json_encode($this->messageBody),
+                            ...$details
+                        ];
+
+                        $jsonPayload = json_encode($data, JSON_PRETTY_PRINT);
+
+                        if ($jsonPayload !== false) {
+                            $logSystem->error($jsonPayload, ['category' => $this->traceId]);
+                            return;
+                        }
+
+                        $output = sprintf(
+                            "[%s] %s (%s:%s)" . PHP_EOL . "%s",
+                            $handlerClassName,
+                            $e->getMessage(),
+                            $e->getFile(),
+                            $e->getLine(),
+                            $e->getTraceAsString()
+                        );
+
+                        $logSystem->error($output, ['category' => $this->traceId]);
+                    };
+
+                    /** @var ConsumerBase $handler */
+                    $handler = new $handlerClassName($container, $message, $traceId);
+                    $handler->execute();
+                }
+
                 $message->ack();
-            } catch (LogicException $e) {
+            } catch (ValidationException $e) {
+                $errorHandler($e);
+                $message->ack();
+            } catch (
+                RequestException
+                | ConnectException
+                | AMQPRuntimeException
+                | AMQPProtocolException
+                | AMQPConnectionClosedException
+            $e
+            ) {
+                $errorHandler($e);
+                $message->nack(true);
+            } catch (DriverException $e) {
+                $errorHandler($e, ['query' => $e->getQuery()->getSQL(), 'values' => $e->getQuery()->getParams()]);
+                $message->nack(true);
+            } catch (Throwable $e) {
+                $errorHandler($e);
+                $message->nack(true);
+            } finally {
+                $message->getChannel()->close();
             }
 
             $logSystem->info(
