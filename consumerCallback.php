@@ -55,7 +55,9 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                         array $details = []
                     ) use (
                         $logSystem,
-                        $handlerClassName
+                        $handlerClassName,
+                        $messageBody,
+                        $traceId
                     ): void {
                         $data = [
                             'date' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
@@ -64,14 +66,14 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                             'message' => "{$e->getMessage()}",
                             'file' => "{$e->getFile()}:{$e->getLine()}",
                             'stackTrace' => $e->getTrace(),
-                            'queueMessage' => json_encode($this->messageBody),
+                            'queueMessage' => json_encode($messageBody),
                             ...$details
                         ];
 
                         $jsonPayload = json_encode($data, JSON_PRETTY_PRINT);
 
                         if ($jsonPayload !== false) {
-                            $logSystem->error($jsonPayload, ['category' => $this->traceId]);
+                            $logSystem->error($jsonPayload, ['category' => $traceId]);
                             return;
                         }
 
@@ -84,7 +86,7 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                             $e->getTraceAsString()
                         );
 
-                        $logSystem->error($output, ['category' => $this->traceId]);
+                        $logSystem->error($output, ['category' => $traceId]);
                     };
 
                     /** @var ConsumerBase $handler */
@@ -113,6 +115,7 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $errorHandler($e);
                 $message->nack(true);
             } finally {
+                $message->ack();
                 $message->getChannel()->close();
             }
 
