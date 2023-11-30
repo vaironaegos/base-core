@@ -115,7 +115,6 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $errorHandler($e);
                 $message->nack(true);
             } finally {
-                $message->ack();
                 $message->getChannel()->close();
             }
 
