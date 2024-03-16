@@ -2,8 +2,7 @@
   "name": "vaironaegos/api-base-core",
   "license": "MIT",
   "require": {
-    "php": "^8.1",
-    "ext-curl": "*",
+    "php": "^8.2",
     "psr/event-dispatcher": "^1.0",
     "psr/http-message": "*",
     "ramsey/uuid": "^4.1"

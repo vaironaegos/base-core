@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\ApiBase\Adapter\Contracts;
 
-/**
- * Interface QueueSystem
- */
+use Astrotech\ApiBase\Adapter\Exception\InvalidDtoParamException;
+
 interface Dto
 {
     /**
@@ -16,15 +15,10 @@ interface Dto
     public function values(): array;
 
     /**
-     * Get a DTO value by property
-     * @param string $property
-     * @return mixed
+     * Gets the value of a DTO attribute.
+     * @param string $property The name of the attribute.
+     * @return mixed The value of the attribute.
+     * @throws InvalidDtoParamException If the attribute does not exist in the DTO.
      */
     public function get(string $property): mixed;
-
-    /**
-     * Rules to validate DTO
-     * @return array ['fieldName' => ValidatorFieldCollection]
-     */
-    public function rules(): array;
 }

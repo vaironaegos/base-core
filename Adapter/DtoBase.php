@@ -11,9 +11,6 @@ use Astrotech\ApiBase\Adapter\Contracts\Dto;
 use Astrotech\ApiBase\Adapter\Exception\ImmutableDtoException;
 use Astrotech\ApiBase\Adapter\Exception\InvalidDtoParamException;
 
-/**
- * Class DtoBase
- */
 abstract class DtoBase implements Dto, JsonSerializable
 {
     /**
@@ -26,20 +23,24 @@ abstract class DtoBase implements Dto, JsonSerializable
         return $values;
     }
 
+    /**
+     * Creates an instance of the DTO from an associative array of values.
+     * @param array $values An associative array of values.
+     * @return static An instance of the DTO.
+     */
     public static function createFromArray(array $values): static
     {
         $newValues = [];
 
         foreach ($values as $property => $value) {
             $reflectObject = new ReflectionClass(get_called_class());
-            $newPropertyName = underscoreToCamelCase($property);
 
-            if (!$reflectObject->hasProperty($newPropertyName)) {
+            if (!$reflectObject->hasProperty($property)) {
+                unset($values[$property]);
                 continue;
             }
 
-            $newValues[$newPropertyName] = $value;
-            $reflectProperty = $reflectObject->getProperty($newPropertyName);
+            $reflectProperty = $reflectObject->getProperty($property);
             $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
 
             if (!empty($value) && is_array($value) && !$isUnitType) {
@@ -49,7 +50,13 @@ abstract class DtoBase implements Dto, JsonSerializable
                 }
             }
 
-            $newValues[$newPropertyName] = $value;
+            $values[underscoreToCamelCase($property)] = $value;
+
+            if (mb_strstr($property, '_') === false) {
+                continue;
+            }
+
+            unset($values[$property]);
         }
 
         return new static(...$newValues);
@@ -73,27 +80,43 @@ abstract class DtoBase implements Dto, JsonSerializable
         return $this->{$property};
     }
 
-    public function jsonSerialize(): mixed
+    /**
+     * Converts the DTO to an associative array for JSON serialization.
+     * @return array An associative array containing the DTO values.
+     */
+    public function jsonSerialize(): array
     {
         return $this->values();
     }
 
-    public function rules(): array
-    {
-        return [];
-    }
-
-    public function __get(string $name)
+    /**
+     * Gets the value of a DTO attribute using property notation.
+     * @param string $name The name of the attribute.
+     * @return mixed The value of the attribute.
+     * @throws InvalidDtoParamException
+     */
+    public function __get(string $name): mixed
     {
         return $this->get($name);
     }
 
+    /**
+     * Prevents modification of DTO attributes (immutability).
+     * @param string $name The name of the attribute.
+     * @param mixed $value The value of the attribute.
+     * @throws ImmutableDtoException Always throws an exception.
+     */
     public function __set(string $name, mixed $value)
     {
         throw new ImmutableDtoException($name);
     }
 
-    public function __isset($name): bool
+    /**
+     * Checks if a DTO attribute exists.
+     * @param mixed $name The name of the attribute.
+     * @return bool True if the attribute exists, false otherwise.
+     */
+    public function __isset(string $name): bool
     {
         return property_exists($this, $name);
     }
