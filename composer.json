@@ -34,7 +34,6 @@
   "config": {
       "bin-compat": "full",
       "process-timeout": 1800,
-      "optimize-autoloader": true,
       "preferred-install": "dist",
       "platform": {
           "php": "8.2"
@@ -42,7 +41,7 @@
       "allow-plugins": {
           "composer/package-versions-deprecated": true
       },
-    "sort-packages": true
+      "sort-packages": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true
