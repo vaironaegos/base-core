@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-if (!function_exists('isDateUs')) {
-    function isDateUs(string $date): bool
+if (!function_exists('isDateIso8601')) {
+    function isDateIso8601(string $date): bool
     {
         if (empty($date)) {
             return false;
@@ -13,8 +13,8 @@ if (!function_exists('isDateUs')) {
     }
 }
 
-if (!function_exists('isDateTimeUs')) {
-    function isDateTimeUs(string $dateTime): bool
+if (!function_exists('isDateTimeIso8601')) {
+    function isDateTimeIso8601(string $dateTime): bool
     {
         if (empty($dateTime)) {
             return false;
@@ -38,19 +38,8 @@ if (!function_exists('isDateTimeIso')) {
     }
 }
 
-if (!function_exists('convertDatetimeIsoToUs')) {
-    function convertDatetimeIsoToUs(string $dateTime): string
-    {
-        if (empty($dateTime)) {
-            return '';
-        }
-
-        return (new DateTimeImmutable($dateTime))->format('Y-m-d H:i:s');
-    }
-}
-
 if (!function_exists('convertDateToBr')) {
-    function convertDateToBr()
+    function convertDateToBr(): string
     {
         $months = [
             'January' => 'Janeiro',
@@ -72,8 +61,7 @@ if (!function_exists('convertDateToBr')) {
         $date = explode(' ', $now);
         $month = $date[1];
         $month = $months[$month];
-        $date = "{$date[0]} de {$month} de {$date[2]}";
 
-        return $date;
+        return "{$date[0]} de {$month} de {$date[2]}";
     }
 }

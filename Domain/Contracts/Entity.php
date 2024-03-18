@@ -7,54 +7,56 @@ namespace Astrotech\Core\Base\Domain\Contracts;
 interface Entity
 {
     /**
-     * Setter to Identifier entity
+     * Setter method for setting the identifier of the entity.
+     * @param string|int $id The identifier to set for the entity.
+     * @return void
      */
-    public function setId(string $id): void;
+    public function setId(string|int $id): void;
 
     /**
-     * Getter do Identifier entity
-     * @return int|string
+     * Getter method for retrieving the identifier of the entity.
+     * @return int|string The identifier of the entity.
      */
-    public function getId();
+    public function getId(): string|int;
 
     /**
-     * Method to test if id property had been set
-     * @return bool
+     * Method to check if the identifier of the entity has been set.
+     * @return bool True if the identifier is set, false otherwise.
      */
     public function idIsFilled(): bool;
 
     /**
-     * Method for populate an Entity through array
-     * @param array $values Associative array such as `'property' => 'value'`
+     * Method for populating an entity with data from an associative array.
+     * @param array $values Associative array containing entity properties.
      * @return void
      */
     public function fill(array $values): void;
 
     /**
-     * Method that contains the property setter logic
-     * @param string $property Object property name
-     * @param mixed $value Value to be inserted in property
-     * @return Entity
+     * Method for setting a property of the entity.
+     * @param string $property The name of the property to set.
+     * @param mixed $value The value to set for the property.
+     * @return Entity Returns the entity instance for method chaining.
      */
     public function set(string $property, mixed $value): Entity;
 
     /**
-     * Method that contains the property getter logic
-     * @param string $property Object property name
-     * @return mixed
+     * Method for getting the value of a property of the entity.
+     * @param string $property The name of the property to retrieve.
+     * @return mixed The value of the specified property.
      */
-    public function get(string $property);
+    public function get(string $property): mixed;
 
     /**
-     * Output an array based on entity properties
-     * @param bool $toSnakeCase
-     * @return array
+     * Outputs an array representation of the entity based on its properties.
+     * @param bool $toSnakeCase Whether to convert property names to snake case.
+     * @return array An array representation of the entity.
      */
     public function toArray(bool $toSnakeCase = false): array;
 
     /**
-     * Method to be user to prepare entity data to persistence mechanism
-     * @return array
+     * Method to prepare entity data for persistence mechanisms.
+     * @return array An array containing entity data prepared for persistence.
      */
     public function prepare(): array;
 }

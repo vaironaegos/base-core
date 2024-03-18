@@ -5,7 +5,7 @@ declare(strict_types=1);
 if (!function_exists('force2Decimals')) {
     function force2Decimals(float $number): float
     {
-        return (float)floor($number * 100) / 100;
+        return floor($number * 100) / 100;
     }
 }
 

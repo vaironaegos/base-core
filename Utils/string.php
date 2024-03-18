@@ -209,18 +209,3 @@ if (!function_exists('env')) {
         return $value !== false ? $value : $default;
     }
 }
-
-if (!function_exists('config')) {
-    function config(string $name): mixed
-    {
-        $configs = CONFIG;
-
-        $keys = explode('.', $name);
-
-        foreach ($keys as $key) {
-            $configs = $configs[$key];
-        }
-
-        return $configs;
-    }
-}

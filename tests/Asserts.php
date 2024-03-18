@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\Tests;
+namespace Astrotech\Core\Base\Tests;
 
 trait Asserts
 {

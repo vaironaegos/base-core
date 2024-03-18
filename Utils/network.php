@@ -51,7 +51,7 @@ if (!function_exists('browserInfo')) {
         $platform = 'Unknown';
         $version = "";
 
-        //First get the platform?
+        // First get the platform?
         if (preg_match('/linux/i', $u_agent)) {
             $platform = 'linux';
         } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {

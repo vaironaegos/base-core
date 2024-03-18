@@ -14,20 +14,10 @@ use Astrotech\Core\Base\Domain\Contracts\Entity;
 use Astrotech\Core\Base\Domain\Contracts\ValueObject;
 use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 
-/**
- * Class Entity
- * @package Astrotech\Shared\Domain
- *
- * @property int|string $id
- */
 abstract class EntityBase implements Entity, JsonSerializable
 {
     protected string|int $id = '';
 
-    /**
-     * Entity constructor.
-     * @param array $values
-     */
     final public function __construct(array $values)
     {
         foreach ($values as $property => $value) {
@@ -41,41 +31,38 @@ abstract class EntityBase implements Entity, JsonSerializable
         $this->afterInstantiating();
     }
 
+    /**
+     * Hook method called before entity instantiation.
+     * @param array $values The array of values passed to the constructor.
+     * @return void
+     */
     protected function beforeInstantiating(array &$values): void
     {
     }
 
+    /**
+     * Hook method called after entity instantiation.
+     * @return void
+     */
     protected function afterInstantiating(): void
     {
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function setId(string $id): void
+    public function setId(string|int $id): void
     {
         $this->set('id', $id);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getId(): string|int
     {
         return $this->get('id');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function idIsFilled(): bool
     {
         return !empty($this->getId());
     }
 
-    /**
-     * @inheritDoc
-     */
     public function fill(array $values): void
     {
         foreach ($values as $attribute => $value) {
@@ -83,9 +70,6 @@ abstract class EntityBase implements Entity, JsonSerializable
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function set(string $property, mixed $value): Entity
     {
         if (mb_strstr($property, '_') !== false) {
@@ -143,7 +127,10 @@ abstract class EntityBase implements Entity, JsonSerializable
             $value = (float) $value;
         }
 
-        $isDateValue = (is_string($value) && (isDateUs($value) || isDateTimeUs($value) || isDateTimeIso($value)));
+        $isDateValue = (
+            is_string($value) &&
+            (isDateIso8601($value) || isDateTimeIso8601($value) || isDateTimeIso($value))
+        );
 
         if ($isDateValue) {
             $value = new DateTimeImmutable($value);
@@ -153,10 +140,7 @@ abstract class EntityBase implements Entity, JsonSerializable
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function get(string $property)
+    public function get(string $property): mixed
     {
         $getter = "get" . ucfirst($property);
 
@@ -184,7 +168,6 @@ abstract class EntityBase implements Entity, JsonSerializable
         /** @var int|string|object $value */
         foreach ($propertyList as $prop => $value) {
             if ($value instanceof DateTimeInterface) {
-                //$propertyList[$prop] = $value->format(DATE_ATOM);
                 $propertyList[$prop] = $value->format('Y-m-d H:i:s');
                 continue;
             }
@@ -207,10 +190,9 @@ abstract class EntityBase implements Entity, JsonSerializable
             if (is_object($value)) {
                 $reflectObject = new ReflectionClass(get_class($value));
                 $properties = $reflectObject->getProperties();
-                //                $propertyList[$prop] = [];
+                $propertyList[$prop] = [];
 
                 foreach ($properties as $property) {
-                    $property->setAccessible(true);
                     $propertyList[$prop][$property->getName()] = $property->getValue($value);
                 }
             }
