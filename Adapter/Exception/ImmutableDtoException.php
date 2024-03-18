@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Exception;
+namespace Astrotech\Core\Base\Adapter\Exception;
 
-use Astrotech\ApiBase\Exception\RuntimeException;
+use Astrotech\Core\Base\Exception\RuntimeException;
 
 final class ImmutableDtoException extends RuntimeException
 {

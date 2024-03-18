@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Doctrine\Sorteable;
+namespace Astrotech\Core\Base\Infra\Doctrine\Sorteable;
 
 trait MongoDbSortable
 {

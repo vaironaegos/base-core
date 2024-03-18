@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Utils;
+namespace Astrotech\Core\Base\Utils;
 
 use Iterator;
 use Countable;

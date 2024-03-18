@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Contracts;
+namespace Astrotech\Core\Base\Adapter\Contracts;
 
 use Psr\Http\Message\ResponseInterface as Response;
 

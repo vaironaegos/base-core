@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Contracts;
+namespace Astrotech\Core\Base\Adapter\Contracts;
 
-use Astrotech\ApiBase\Adapter\Exception\InvalidDtoParamException;
+use Astrotech\Core\Base\Adapter\Exception\InvalidDtoParamException;
 
 interface Dto
 {

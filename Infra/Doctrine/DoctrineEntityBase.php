@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Doctrine;
+namespace Astrotech\Core\Base\Infra\Doctrine;
 
 use DateTime;
 use ReflectionClass;
@@ -15,8 +15,8 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
-use Astrotech\ApiBase\Infra\Slim\Http\ControllerBase;
+use Astrotech\Core\Base\Domain\Contracts\ValueObject;
+use Astrotech\Core\Base\Infra\Slim\Http\ControllerBase;
 
 #[HasLifecycleCallbacks]
 abstract class DoctrineEntityBase

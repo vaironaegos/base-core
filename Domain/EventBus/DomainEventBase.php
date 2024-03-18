@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\EventBus;
+namespace Astrotech\Core\Base\Domain\EventBus;
 
 use Stringable;
 use JsonSerializable;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Astrotech\ApiBase\Domain\Contracts\DomainEvent;
+use Astrotech\Core\Base\Domain\Contracts\DomainEvent;
 
 abstract class DomainEventBase implements DomainEvent, JsonSerializable, Stringable
 {

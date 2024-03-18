@@ -1,57 +1,43 @@
 <?php
 
-declare(strict_types=1);
-
 $finder = Symfony\Component\Finder\Finder::create()
     ->notPath('vendor')
+    ->ignoreDotFiles(true)
     ->in(__DIR__)
     ->name('*.php');
 
 $config = new PhpCsFixer\Config();
 
 $config
-    ->setUsingCache(false)
+    ->setUsingCache(true)
+    ->setCacheFile(__DIR__ . '/.php_cs.cache')
     ->setFinder($finder)
-    ->setRules(
-        [
-            '@PSR12' => true,
-            'final_class' => true,
-            'static_lambda' => false,
-            'linebreak_after_opening_tag' => true,
-            'blank_line_after_opening_tag' => true,
-            'declare_strict_types' => true,
-            'array_syntax' => [
-                'syntax' => 'short'
-            ],
-            'ordered_imports' => [
-                'sort_algorithm' => 'length'
-            ],
-            'no_unused_imports' => true,
-            'list_syntax' => [
-                'syntax' => 'short',
-            ],
-            'native_function_invocation' => [
-                'include' => []
-            ],
-            'no_leading_import_slash' => false,
-            'native_constant_invocation' => false,
-            'native_function_casing' => true,
-            'global_namespace_import' => [
-                'import_classes' => true,
-                'import_functions' => false,
-                'import_constants' => false,
-            ],
-            'lowercase_cast' => true,
-            'lowercase_static_reference' => true,
-            'modernize_types_casting' => true,
-            'new_with_braces' => true,
-            'blank_line_before_statement' => [
-                'statements' => ['declare'],
-            ],
-            'return_type_declaration' => [
-                'space_before' => 'none',
-            ],
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@PSR12' => true,
+        'psr_autoloading' => true,
+        'declare_strict_types' => true,
+        'linebreak_after_opening_tag' => true,
+        'blank_line_after_opening_tag' => true,
+        'no_unused_imports' => true,
+        'new_with_braces' => true,
+        'type_declaration_spaces' => [
+            'elements' => ['function', 'property']
+        ],
+        'array_syntax' => [
+            'syntax' => 'short'
+        ],
+        'blank_line_before_statement' => [
+            'statements' => ['declare'],
+        ],
+        'ordered_imports' => [
+            'sort_algorithm' => 'length'
+        ],
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_functions' => false,
+            'import_constants' => false,
         ]
-    );
+    ]);
 
 return $config;

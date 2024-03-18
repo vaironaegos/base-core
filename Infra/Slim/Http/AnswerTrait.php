@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Slim\Http;
+namespace Astrotech\Core\Base\Infra\Slim\Http;
 
 use Psr\Http\Message\ResponseInterface as Response;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\Collection;
+namespace Astrotech\Core\Base\Domain\Collection;
 
 use DateTimeInterface;
-use Astrotech\ApiBase\Utils\CollectionBase;
+use Astrotech\Core\Base\Utils\CollectionBase;
 
 final class DatetimeCollection extends CollectionBase
 {

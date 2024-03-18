@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain;
+namespace Astrotech\Core\Base\Domain;
 
 use ReflectionClass;
 use JsonSerializable;
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
+use Astrotech\Core\Base\Domain\Contracts\ValueObject;
 
 abstract class ValueObjectBase implements ValueObject, JsonSerializable
 {

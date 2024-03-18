@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\Contracts;
+namespace Astrotech\Core\Base\Domain\Contracts;
 
-use Astrotech\ApiBase\Domain\Contracts\Dto\SearchOptions;
+use Astrotech\Core\Base\Domain\Contracts\Dto\SearchOptions;
 
 interface LogRepository
 {

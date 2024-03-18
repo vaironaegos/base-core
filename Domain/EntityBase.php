@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain;
+namespace Astrotech\Core\Base\Domain;
 
 use UnitEnum;
 use ReflectionClass;
@@ -10,9 +10,9 @@ use JsonSerializable;
 use DateTimeImmutable;
 use DateTimeInterface;
 use ReflectionUnionType;
-use Astrotech\ApiBase\Domain\Contracts\Entity;
-use Astrotech\ApiBase\Domain\Contracts\ValueObject;
-use Astrotech\ApiBase\Domain\Exceptions\EntityException;
+use Astrotech\Core\Base\Domain\Contracts\Entity;
+use Astrotech\Core\Base\Domain\Contracts\ValueObject;
+use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 
 /**
  * Class Entity

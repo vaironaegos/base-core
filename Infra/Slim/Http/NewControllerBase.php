@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Slim\Http;
+namespace Astrotech\Core\Base\Infra\Slim\Http;
 
 use Error;
 use Throwable;
 use InvalidArgumentException;
 use GuzzleHttp\Exception\ServerException;
-use Astrotech\ApiBase\Exception\RuntimeException;
+use Astrotech\Core\Base\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface as Response;
-use Astrotech\ApiBase\Exception\ValidationException;
+use Astrotech\Core\Base\Exception\ValidationException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class NewControllerBase

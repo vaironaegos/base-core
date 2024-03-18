@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
 use Respect\Validation\Validator;
-use Astrotech\ApiBase\Exception\ValidationException;
-use Astrotech\ApiBase\Adapter\Contracts\ValidatorInterface;
+use Astrotech\Core\Base\Exception\ValidationException;
+use Astrotech\Core\Base\Adapter\Contracts\ValidatorInterface;
 
 /**
  * For all Respect/Validation rules

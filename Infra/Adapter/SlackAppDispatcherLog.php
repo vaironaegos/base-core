@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
 use MoisesK\SlackDispatcherPHP\Attachment;
 use MoisesK\SlackDispatcherPHP\SlackAppMessage;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 use MoisesK\SlackDispatcherPHP\Dto\AttachmentAuthor;
 use MoisesK\SlackDispatcherPHP\Dto\AttachmentFooter;
 

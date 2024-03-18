@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Slim\Http;
+namespace Astrotech\Core\Base\Infra\Slim\Http;
 
 enum HttpStatus: int
 {

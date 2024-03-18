@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Repository;
+namespace Astrotech\Core\Base\Infra\Repository;
 
 use MongoDB\Driver\Cursor;
 use MongoDB\Client as MongoDbClient;
 use MongoDB\Collection as MongoDbCollection;
-use Astrotech\ApiBase\Domain\Contracts\LogRepository;
-use Astrotech\ApiBase\Domain\Contracts\Dto\SearchOptions;
-use Astrotech\ApiBase\Infra\Doctrine\Paginatable\InputData;
-use Astrotech\ApiBase\Infra\Doctrine\Sorteable\MongoDbSortable;
-use Astrotech\ApiBase\Infra\Doctrine\Searcheable\MongoDbSearchable;
-use Astrotech\ApiBase\Infra\Doctrine\Paginatable\MongoDbPaginatable;
+use Astrotech\Core\Base\Domain\Contracts\LogRepository;
+use Astrotech\Core\Base\Domain\Contracts\Dto\SearchOptions;
+use Astrotech\Core\Base\Infra\Doctrine\Paginatable\InputData;
+use Astrotech\Core\Base\Infra\Doctrine\Sorteable\MongoDbSortable;
+use Astrotech\Core\Base\Infra\Doctrine\Searcheable\MongoDbSearchable;
+use Astrotech\Core\Base\Infra\Doctrine\Paginatable\MongoDbPaginatable;
 
 final class MongoDbLogRepository implements LogRepository
 {

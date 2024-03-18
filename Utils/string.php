@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Astrotech\ApiBase\Exception\RuntimeException;
+use Astrotech\Core\Base\Exception\RuntimeException;
 
 if (!function_exists('stripAccents')) {
     function stripAccents(string $value): string

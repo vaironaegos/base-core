@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\Contracts;
+namespace Astrotech\Core\Base\Domain\Contracts;
 
 interface Repository
 {

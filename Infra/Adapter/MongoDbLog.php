@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
 use DateTimeImmutable;
-use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Astrotech\ApiBase\Domain\Contracts\LogRepository;
+use Astrotech\Core\Base\Infra\Enum\LogLevelEnum;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Domain\Contracts\LogRepository;
 
 final class MongoDbLog implements LogSystem
 {

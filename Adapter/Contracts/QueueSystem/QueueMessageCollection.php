@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
+namespace Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 
-use Astrotech\ApiBase\Utils\CollectionBase;
+use Astrotech\Core\Base\Utils\CollectionBase;
 
 final class QueueMessageCollection extends CollectionBase
 {

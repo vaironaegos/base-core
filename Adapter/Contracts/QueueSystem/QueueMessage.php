@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
+namespace Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 
-use Astrotech\ApiBase\Adapter\DtoBase;
+use Astrotech\Core\Base\Adapter\DtoBase;
 
 final class QueueMessage extends DtoBase
 {

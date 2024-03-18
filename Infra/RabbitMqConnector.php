@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra;
+namespace Astrotech\Core\Base\Infra;
 
 use Throwable;
 use AMQPConnectionException;

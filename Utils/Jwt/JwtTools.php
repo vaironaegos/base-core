@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Utils\Jwt;
+namespace Astrotech\Core\Base\Utils\Jwt;
 
 use DateTime;
 use stdClass;

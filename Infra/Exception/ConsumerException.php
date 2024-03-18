@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Exception;
+namespace Astrotech\Core\Base\Infra\Exception;
 
 use Exception;
-use Astrotech\ApiBase\Exception\ExceptionBase;
+use Astrotech\Core\Base\Exception\ExceptionBase;
 
 class ConsumerException extends ExceptionBase
 {

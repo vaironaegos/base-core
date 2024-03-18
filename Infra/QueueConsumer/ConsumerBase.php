@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\QueueConsumer;
+namespace Astrotech\Core\Base\Infra\QueueConsumer;
 
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
 use PhpAmqpLib\Connection\AbstractConnection;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 
 abstract class ConsumerBase
 {

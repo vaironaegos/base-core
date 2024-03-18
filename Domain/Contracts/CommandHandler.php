@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\Contracts;
+namespace Astrotech\Core\Base\Domain\Contracts;
 
-use Astrotech\ApiBase\Adapter\Contracts\Dto;
+use Astrotech\Core\Base\Adapter\Contracts\Dto;
 
 interface CommandHandler
 {

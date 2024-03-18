@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Adapter\Contracts\QueueSystem;
+namespace Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 
 enum QueueActions: string
 {
