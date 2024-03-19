@@ -9,10 +9,18 @@ use Astrotech\Core\Base\Adapter\Exception\InvalidDtoParamException;
 interface Dto
 {
     /**
-     * Associative array such as `'property' => 'value'` with all boundary values
+     * Associative array in the format `'property' => 'value'` with
+     * all raw values without transformations
      * @return array
      */
     public function values(): array;
+
+    /**
+     * Associative array in the format `'property' => 'value'` with
+     * all values being able to be transformed or mutated for certain scenarios
+     * @return array
+     */
+    public function toArray(): array;
 
     /**
      * Gets the value of a DTO attribute.

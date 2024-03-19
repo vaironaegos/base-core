@@ -34,6 +34,7 @@ Tests/_support/_generated
 .php_cs.cache
 .php-cs-fixer.cache
 tests/coverage
+tests/.phpunit.cache
 tests/.phpunit.result.cache
 .phpunit.result.cache
 .xdebug
