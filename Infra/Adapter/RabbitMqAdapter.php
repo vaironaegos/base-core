@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra\Adapter;
 
-use PhpAmqpLib\Message\AMQPMessage;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Astrotech\Core\Base\Adapter\Contracts\QueueSystem\QueueSystem;
-use Astrotech\Core\Base\Adapter\Contracts\QueueSystem\QueueMessage;
 use Astrotech\Core\Base\Adapter\Contracts\QueueSystem\QueueMessageCollection;
+use Astrotech\Core\Base\Adapter\Contracts\QueueSystem\QueueSystem;
+use Astrotech\Core\Base\Adapter\QueueMessage;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 final class RabbitMqAdapter implements QueueSystem
 {

@@ -19,6 +19,6 @@ final class ImmutableDtoException extends RuntimeException
 
     public function getName(): string
     {
-        return 'Immutable QueueSystem Error';
+        return 'Immutable DTO Error';
     }
 }

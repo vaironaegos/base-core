@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
-
-use Astrotech\Core\Base\Adapter\DtoBase;
+namespace Astrotech\Core\Base\Adapter;
 
 final class QueueMessage extends DtoBase
 {
     public function __construct(
         public readonly string $queueName,
-        public readonly QueueActions | string $action,
-        public readonly array $data,
+        public readonly string $actionName,
+        public readonly array $payload,
         protected readonly array $options = []
     ) {
     }
@@ -27,8 +25,7 @@ final class QueueMessage extends DtoBase
 
     public function __toString(): string
     {
-        $dataCloned = $this->data;
-        $actionName = is_string($this->action) ? $this->action : $this->action->value;
+        $dataCloned = $this->payload;
         $eventId = $dataCloned['eventId'] ?? null;
         $processed = $dataCloned['processed'] ?? null;
         $createdAt = $dataCloned['createdAt'] ?? null;
@@ -46,7 +43,7 @@ final class QueueMessage extends DtoBase
             'eventId' => $eventId,
             'userId' => $userId,
             'processed' => $processed,
-            'action' => $actionName,
+            'action' => $this->actionName,
             'createdAt' => $createdAt,
             'eventName' => $eventName,
             'data' => $dataCloned

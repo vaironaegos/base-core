@@ -31,6 +31,11 @@ RUN pecl install xdebug-3.2.2 && docker-php-ext-enable xdebug
 RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+RUN mkdir -p /usr/src/php/ext/mongodb \
+    && curl -fsSL https://pecl.php.net/get/mongodb-1.16.2 | tar xvz -C "/usr/src/php/ext/mongodb" --strip 1 \
+    && docker-php-ext-install mongodb \
+    && docker-php-ext-enable mongodb
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 9000 8000

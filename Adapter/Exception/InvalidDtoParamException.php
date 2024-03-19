@@ -19,6 +19,6 @@ final class InvalidDtoParamException extends RuntimeException
 
     public function getName(): string
     {
-        return 'Invalid QueueSystem Param Error';
+        return 'Invalid DTO Param Error';
     }
 }
