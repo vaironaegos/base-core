@@ -19,7 +19,7 @@ RUN docker-php-ext-install zip
 RUN cp /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
     echo $TIMEZONE > /etc/timezone
 
-RUN wget -O phpunit https://phar.phpunit.de/phpunit.phar && \
+RUN wget -O phpunit https://phar.phpunit.de/phpunit-11.0.6.phar && \
     chmod +x phpunit && \
     mv phpunit /usr/local/bin/phpunit
 
@@ -35,6 +35,8 @@ RUN mkdir -p /usr/src/php/ext/mongodb \
     && curl -fsSL https://pecl.php.net/get/mongodb-1.16.2 | tar xvz -C "/usr/src/php/ext/mongodb" --strip 1 \
     && docker-php-ext-install mongodb \
     && docker-php-ext-enable mongodb
+
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 

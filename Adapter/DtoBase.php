@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Adapter;
 
+use DateTimeInterface;
 use ReflectionClass;
 use JsonSerializable;
 use ReflectionUnionType;
@@ -13,9 +14,6 @@ use Astrotech\Core\Base\Adapter\Exception\InvalidDtoParamException;
 
 abstract class DtoBase implements Dto, JsonSerializable
 {
-    /**
-     * {@inheritdoc}
-     */
     public function values(): array
     {
         $values = get_object_vars($this);
@@ -23,25 +21,6 @@ abstract class DtoBase implements Dto, JsonSerializable
         return $values;
     }
 
-    /**
-     * Creates an instance of the DTO from an associative array of values.
-     * @param array $values An associative array of values.
-     * @return static An instance of the DTO.
-     */
-    public static function createFromArray(array $values): static
-    {
-        $transformedValues = [];
-
-        foreach ($values as $property => $value) {
-            $transformedValues[underscoreToCamelCase($property)] = $this->get();
-        }
-
-        return new static(...$transformedValues);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $property): mixed
     {
         $getter = "get" . ucfirst($property);
@@ -61,7 +40,7 @@ abstract class DtoBase implements Dto, JsonSerializable
         if (!empty($value) && is_array($value) && !$isUnitType) {
             $propertyType = $reflectProperty->getType()->getName();
             if (is_a($propertyType, Dto::class, true)) {
-                return $propertyType::createFromArray($value);
+                return new static(...$value);
             }
         }
 
@@ -74,7 +53,22 @@ abstract class DtoBase implements Dto, JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return $this->values();
+        return $this->toArray();
+    }
+
+    public function toArray(): array
+    {
+        return array_map(function (mixed $value) {
+            if ($value instanceof DateTimeInterface) {
+                $value = $value->format('Y-m-d H:i:s');
+            }
+
+            if ($value instanceof Dto) {
+                $value = $value->toArray();
+            }
+
+            return $value;
+        }, $this->values());
     }
 
     /**
