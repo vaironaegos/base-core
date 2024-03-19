@@ -30,36 +30,13 @@ abstract class DtoBase implements Dto, JsonSerializable
      */
     public static function createFromArray(array $values): static
     {
-        $newValues = [];
+        $transformedValues = [];
 
         foreach ($values as $property => $value) {
-            $reflectObject = new ReflectionClass(get_called_class());
-
-            if (!$reflectObject->hasProperty($property)) {
-                unset($values[$property]);
-                continue;
-            }
-
-            $reflectProperty = $reflectObject->getProperty($property);
-            $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
-
-            if (!empty($value) && is_array($value) && !$isUnitType) {
-                $propertyType = $reflectProperty->getType()->getName();
-                if (is_a($propertyType, Dto::class, true)) {
-                    $value = $propertyType::createFromArray($value);
-                }
-            }
-
-            $values[underscoreToCamelCase($property)] = $value;
-
-            if (mb_strstr($property, '_') === false) {
-                continue;
-            }
-
-            unset($values[$property]);
+            $transformedValues[underscoreToCamelCase($property)] = $this->get();
         }
 
-        return new static(...$newValues);
+        return new static(...$transformedValues);
     }
 
     /**
@@ -75,6 +52,17 @@ abstract class DtoBase implements Dto, JsonSerializable
 
         if (!property_exists($this, $property)) {
             throw new InvalidDtoParamException($property);
+        }
+
+        $reflectObject = new ReflectionClass(get_called_class());
+        $reflectProperty = $reflectObject->getProperty($property);
+        $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
+
+        if (!empty($value) && is_array($value) && !$isUnitType) {
+            $propertyType = $reflectProperty->getType()->getName();
+            if (is_a($propertyType, Dto::class, true)) {
+                return $propertyType::createFromArray($value);
+            }
         }
 
         return $this->{$property};
