@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Exception;
+namespace Astrotech\Core\Base\Exception;
 
 use Exception;
 

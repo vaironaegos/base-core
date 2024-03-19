@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\ValueObjects;
+namespace Astrotech\Core\Base\Domain\ValueObjects;
 
-use Astrotech\ApiBase\Domain\ValueObjectBase;
+use Astrotech\Core\Base\Domain\ValueObjectBase;
 
 final class Phone extends ValueObjectBase
 {

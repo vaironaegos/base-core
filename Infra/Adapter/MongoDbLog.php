@@ -2,21 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
 use DateTimeImmutable;
-use Astrotech\ApiBase\Infra\Enum\LogLevelEnum;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Astrotech\ApiBase\Domain\Contracts\LogRepository;
+use Astrotech\Core\Base\Infra\Enum\LogLevelEnum;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 
 final class MongoDbLog implements LogSystem
 {
     private string $defaultCategory = 'default';
-
-    public function __construct(
-        private readonly LogRepository $logRepository
-    ) {
-    }
 
     public function debug(string $message, array $options = []): void
     {
@@ -46,9 +40,6 @@ final class MongoDbLog implements LogSystem
     {
         $category = $options['category'] ?? $this->defaultCategory;
         $this->persistLog($category, LogLevelEnum::ERROR, $message);
-
-        $slackLogDispatcher = new SlackAppDispatcherLog();
-        $slackLogDispatcher->error($message, $options);
     }
 
     public function fatal(string $message, array $options = []): void
@@ -59,12 +50,12 @@ final class MongoDbLog implements LogSystem
 
     private function persistLog(string $category, LogLevelEnum $level, string $message): void
     {
-        $this->logRepository->insert([
+        $data = [
             'ip' => getRealIp(),
             'category' => $category,
             'level' => $level->value,
             'createdAt' => (new DateTimeImmutable())->format(DATE_ATOM),
             'message' => $message,
-        ]);
+        ];
     }
 }

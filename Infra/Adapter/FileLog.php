@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 
 final class FileLog implements LogSystem
 {

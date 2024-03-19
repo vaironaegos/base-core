@@ -1,35 +1,55 @@
 {
-  "name": "vaironaegos/api-base-core",
+  "name": "vaironaegos/base-core",
   "license": "MIT",
+  "scripts": {
+    "test": "phpunit --testdox --do-not-cache-result --configuration tests/phpunit.xml",
+    "test:filter": "phpunit --testdox --do-not-cache-result --configuration tests/phpunit.xml --filter",
+    "test:coverage": "XDEBUG_MODE=coverage; phpunit --configuration tests/phpunit.xml --coverage-html tests/coverage/html",
+    "phpcs": "phpcs ./ --standard=phpcs.xml",
+    "phpcs:fix": "php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky yes",
+    "phpcbf": "phpcbf -w -q > /dev/null || true"
+  },
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-curl": "*",
+    "ext-mongodb": "*",
+    "guzzlehttp/guzzle": "^7.8",
+    "mongodb/mongodb": "^1.16",
     "psr/event-dispatcher": "^1.0",
     "psr/http-message": "*",
     "ramsey/uuid": "^4.1"
   },
   "require-dev": {
-    "fakerphp/faker": "^1.9.1",
-    "mockery/mockery": "^1.4.4",
     "phpunit/phpunit": "^9.5.10",
     "squizlabs/php_codesniffer": "^3.5",
     "friendsofphp/php-cs-fixer": "^3",
-    "dg/bypass-finals": "^1.3"
+    "dg/bypass-finals": "^1.3",
+    "fakerphp/faker": "^1.14"
   },
   "autoload": {
     "psr-4": {
-      "Astrotech\\ApiBase\\": "/"
-    }
+      "Astrotech\\Core\\Base\\": "./"
+    },
+    "files": [
+        "utils/index.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "Tests/"
+      "Astrotech\\Core\\Base\\Tests\\": "tests/"
     }
   },
   "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true
+      "bin-compat": "full",
+      "process-timeout": 1800,
+      "preferred-install": "dist",
+      "platform": {
+          "php": "8.2"
+      },
+      "allow-plugins": {
+          "composer/package-versions-deprecated": true
+      },
+      "sort-packages": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true

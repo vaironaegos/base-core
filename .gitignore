@@ -31,15 +31,10 @@ Tests/_support/_generated
 
 .env
 .env.testing
-.docker/data
-.docker/redis
-.docker/dumps
 .php_cs.cache
 .php-cs-fixer.cache
-Tests/coverage
-Tests/.phpunit.result.cache
-Tests/phpunit.xml
+tests/coverage
+tests/.phpunit.result.cache
 .phpunit.result.cache
-ws/node_modules
 .xdebug
 .vscode

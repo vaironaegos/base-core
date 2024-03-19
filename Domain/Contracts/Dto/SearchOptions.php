@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Domain\Contracts\Dto;
+namespace Astrotech\Core\Base\Domain\Contracts\Dto;
 
-use Astrotech\ApiBase\Adapter\DtoBase;
+use Astrotech\Core\Base\Adapter\DtoBase;
 
 class SearchOptions extends DtoBase
 {

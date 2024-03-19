@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\ApiBase\Infra\Adapter;
+namespace Astrotech\Core\Base\Infra\Adapter;
 
 use GuzzleHttp\Client;
-use Astrotech\ApiBase\Adapter\Contracts\HttpClient;
+use Astrotech\Core\Base\Adapter\Contracts\HttpClient;
 use Psr\Http\Message\ResponseInterface as Response;
 
 final class GuzzleHttpClient implements HttpClient
@@ -29,7 +29,7 @@ final class GuzzleHttpClient implements HttpClient
         ]);
     }
 
-    public function post(string $uri, array $params = []): Response
+    public function post(string $uri, array $body = [], array $params = []): Response
     {
         $requestParams = [
             'json' => $params['body'] ?? [],
@@ -49,7 +49,7 @@ final class GuzzleHttpClient implements HttpClient
         return $this->httpClient->post($uri, $requestParams);
     }
 
-    public function put(string $uri, array $params = []): Response
+    public function put(string $uri, array $body = [], array $params = []): Response
     {
         $requestParams = [
             'json' => $params['body'] ?? [],
@@ -67,5 +67,19 @@ final class GuzzleHttpClient implements HttpClient
         }
 
         return $this->httpClient->put($uri, $requestParams);
+    }
+
+    public function patch(string $uri, array $body = [], array $params = []): Response
+    {
+        $this->put($uri, $body, $params);
+    }
+
+    public function delete(string $uri, array $params = []): Response
+    {
+        $requestParams = [
+            'headers' => $params['headers'] ?? []
+        ];
+
+        return $this->httpClient->delete($uri, $requestParams);
     }
 }
