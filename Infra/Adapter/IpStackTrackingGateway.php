@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Astrotech\Core\Base\Infra\Adapter;
 
 use Astrotech\Core\Base\Adapter\Contracts\HttpClient;
-use Astrotech\Core\Base\Adapter\Contracts\IpService;
+use Astrotech\Core\Base\Adapter\Contracts\IpTrackingGateway;
 
-final class IpStackService implements IpService
+final class IpStackTrackingGateway implements IpTrackingGateway
 {
     private string $baseUrl = 'https://api.ipstack.com';
 
