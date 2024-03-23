@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\Core\Base\Tests\Fakes;
 
-use Astrotech\Core\Base\Domain\ValueObjectBase;
 use DomainException;
+use Astrotech\Core\Base\Domain\ValueObjectBase;
 
 final class AnyValueObject extends ValueObjectBase
 {

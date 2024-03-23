@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra\Adapter;
 
-use Astrotech\Core\Base\Adapter\Contracts\UuidTools;
 use Ramsey\Uuid\Uuid;
+use Astrotech\Core\Base\Adapter\Contracts\UuidTools;
 
 final class RamseyUuidAdapter implements UuidTools
 {

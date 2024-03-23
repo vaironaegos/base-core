@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra;
 
-use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
-use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Container\ContainerInterface;
+use PhpAmqpLib\Connection\AbstractConnection;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 
 abstract class ConsumerBase
 {

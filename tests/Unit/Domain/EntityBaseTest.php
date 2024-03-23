@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Tests\Unit\Domain;
 
-use Astrotech\Core\Base\Domain\Contracts\Entity;
-use Astrotech\Core\Base\Domain\Contracts\ValueObject;
-use Astrotech\Core\Base\Domain\EntityBase;
-use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Astrotech\Core\Base\Tests\Fakes\AnyChildEntity;
-use Astrotech\Core\Base\Tests\Fakes\AnyEntity;
-use Astrotech\Core\Base\Tests\Fakes\AnyValueObject;
-use Astrotech\Core\Base\Tests\Fakes\GenericClass;
 use Astrotech\Core\Base\Tests\TestCase;
+use Astrotech\Core\Base\Domain\EntityBase;
+use Astrotech\Core\Base\Tests\Fakes\AnyEntity;
+use Astrotech\Core\Base\Domain\Contracts\Entity;
+use Astrotech\Core\Base\Tests\Fakes\GenericClass;
+use Astrotech\Core\Base\Tests\Fakes\AnyChildEntity;
+use Astrotech\Core\Base\Tests\Fakes\AnyValueObject;
+use Astrotech\Core\Base\Domain\Contracts\ValueObject;
+use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 
 final class EntityBaseTest extends TestCase
 {

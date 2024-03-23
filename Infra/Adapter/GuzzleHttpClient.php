@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Astrotech\Core\Base\Infra\Adapter;
 
 use GuzzleHttp\Client;
-use Astrotech\Core\Base\Adapter\Contracts\HttpClient;
 use Psr\Http\Message\ResponseInterface as Response;
+use Astrotech\Core\Base\Adapter\Contracts\HttpClient;
 
 final class GuzzleHttpClient implements HttpClient
 {

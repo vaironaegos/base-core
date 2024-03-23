@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Tests\Unit\Adapter;
 
-use Astrotech\Core\Base\Adapter\DtoBase;
-use Astrotech\Core\Base\Adapter\Exception\InvalidDtoParamException;
-use Astrotech\Core\Base\Tests\Fakes\FakeDto;
-use Astrotech\Core\Base\Tests\TestCase;
 use DateTimeImmutable;
+use Astrotech\Core\Base\Tests\TestCase;
+use Astrotech\Core\Base\Adapter\DtoBase;
+use Astrotech\Core\Base\Tests\Fakes\FakeDto;
+use Astrotech\Core\Base\Adapter\Exception\InvalidDtoParamException;
 
 final class DtoBaseTest extends TestCase
 {

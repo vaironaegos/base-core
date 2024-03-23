@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\Core\Base\tests\Unit\Domain;
 
-use Astrotech\Core\Base\Tests\Fakes\AnyValueObject;
 use Astrotech\Core\Base\Tests\TestCase;
+use Astrotech\Core\Base\Tests\Fakes\AnyValueObject;
 
 final class ValueObjectBaseTest extends TestCase
 {

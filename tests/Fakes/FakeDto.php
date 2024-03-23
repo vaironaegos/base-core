@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Astrotech\Core\Base\Tests\Fakes;
 
-use Astrotech\Core\Base\Adapter\DtoBase;
 use DateTimeInterface;
+use Astrotech\Core\Base\Adapter\DtoBase;
 
 final class FakeDto extends DtoBase
 {
@@ -15,7 +17,8 @@ final class FakeDto extends DtoBase
         public readonly bool $isActive,
         public readonly DateTimeInterface $createdAt,
         public readonly ?FakeDto $dto = null,
-    ){}
+    ) {
+    }
 
     public function getName(): string
     {

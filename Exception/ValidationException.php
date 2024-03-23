@@ -6,7 +6,7 @@ namespace Astrotech\Core\Base\Exception;
 
 use Exception;
 
-class ValidationException extends ExceptionBase
+final class ValidationException extends ExceptionBase
 {
     protected int|string $errorCode = 'VALIDATION_ERROR';
     protected int $statusCode = 400;

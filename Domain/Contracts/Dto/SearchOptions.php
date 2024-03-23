@@ -6,7 +6,7 @@ namespace Astrotech\Core\Base\Domain\Contracts\Dto;
 
 use Astrotech\Core\Base\Adapter\DtoBase;
 
-class SearchOptions extends DtoBase
+final class SearchOptions extends DtoBase
 {
     public function __construct(
         public readonly array $filters = [],
