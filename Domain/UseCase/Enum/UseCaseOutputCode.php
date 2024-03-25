@@ -20,6 +20,7 @@ enum UseCaseOutputCode: string
     case EMAIL_IS_INVALID = 'emailIsInvalid';
     case CPF_CNPJ_ALREADY_IN_USE = 'cpfCnpjAlreadyInUse';
     case EMAIL_ALREADY_IN_USE = 'emailAlreadyInUse';
+    case PHONE_ALREADY_IN_USE = 'phoneAlreadyInUse';
     case USER_ALREADY_ACTIVE = 'userAlreadyActive';
     case PHONE_IS_INVALID = 'phoneIsInvalid';
     case AMOUNT_NOT_CAN_NEGATIVE = 'amountNotCanNegative';
