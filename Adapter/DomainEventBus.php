@@ -2,20 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\Core\Base\Domain\EventBus;
+namespace Astrotech\Core\Base\Adapter;
 
+use Astrotech\Core\Base\Domain\Contracts\DomainEvent;
 use Astrotech\Core\Base\Domain\Contracts\EventBus;
 use Astrotech\Core\Base\Exception\RuntimeException;
-use Astrotech\Core\Base\Domain\Contracts\DomainEvent;
+use Psr\Container\ContainerInterface;
 
 final class DomainEventBus implements EventBus
 {
     public function __construct(
         private readonly array $listeners,
+        private readonly ContainerInterface $container,
         private readonly string $methodName = 'handle'
     ) {
     }
 
+    /**
+     * @param DomainEventBase $event
+     * @return void
+     * @throws RuntimeException
+     */
     public function dispatch(DomainEvent $event): void
     {
         $eventClassName = get_class($event);
@@ -37,6 +44,7 @@ final class DomainEventBus implements EventBus
                 ));
             }
 
+            $listener = $this->container->get($listener);
             call_user_func_array([$listener, $this->methodName], [$event]);
         }
     }
