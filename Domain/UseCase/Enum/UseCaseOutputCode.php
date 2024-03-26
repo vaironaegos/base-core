@@ -24,4 +24,6 @@ enum UseCaseOutputCode: string
     case USER_ALREADY_ACTIVE = 'userAlreadyActive';
     case PHONE_IS_INVALID = 'phoneIsInvalid';
     case AMOUNT_NOT_CAN_NEGATIVE = 'amountNotCanNegative';
+
+    case RECORD_ALREADY_PAID = 'recordAlreadyPaid';
 }

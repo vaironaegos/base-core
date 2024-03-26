@@ -113,23 +113,25 @@ abstract class EntityBase implements Entity, JsonSerializable
         }
 
         // Logic to convert enums to string
-        if (is_int($value) && enum_exists($propertyType)) {
+        if (enum_exists($propertyType) && is_string($value) || enum_exists($propertyType) && is_int($value)) {
             $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
         }
 
         // Logic to force convert boolean values
         if ($propertyType === 'bool') {
-            $value = (bool) $value;
+            $value = (bool)$value;
         }
 
         // Logic to force convert float values
         if ($propertyType === 'float') {
-            $value = (float) $value;
+            $value = (float)$value;
         }
 
         $isDateValue = (
             is_string($value) &&
-            (isDateIso8601($value) || isDateTimeIso8601($value) || isDateTimeIso($value))
+            (isDateIso8601($value) || isDateTimeIso8601($value) || isDateTimeIso($value)) ||
+            $propertyType instanceof DateTimeInterface && !is_null($value) ||
+            $propertyType == 'DateTimeInterface' && !is_null($value)
         );
 
         if ($isDateValue) {
