@@ -26,4 +26,5 @@ enum UseCaseOutputCode: string
     case AMOUNT_NOT_CAN_NEGATIVE = 'amountNotCanNegative';
 
     case RECORD_ALREADY_PAID = 'recordAlreadyPaid';
+    case RECORD_NOT_IN_ANALYSIS = 'recordNotInAnalysis';
 }
