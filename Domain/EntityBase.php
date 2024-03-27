@@ -17,9 +17,12 @@ use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 abstract class EntityBase implements Entity, JsonSerializable
 {
     protected string|int $id = '';
+    private bool $isConstructor = false;
 
     final public function __construct(array $values)
     {
+        $this->isConstructor = true;
+
         foreach ($values as $property => $value) {
             $values[underscoreToCamelCase($property)] = $value;
             if (str_contains($property, '_')) {
@@ -29,6 +32,7 @@ abstract class EntityBase implements Entity, JsonSerializable
         $this->beforeInstantiating($values);
         $this->fill($values);
         $this->afterInstantiating();
+        $this->isConstructor = false;
     }
 
     /**
@@ -90,7 +94,7 @@ abstract class EntityBase implements Entity, JsonSerializable
         $reflectObject = new ReflectionClass($this);
         $reflectProperty = $reflectObject->getProperty($property);
 
-        if ($reflectProperty->isPrivate()) {
+        if (!$this->isConstructor && $reflectProperty->isPrivate()) {
             return $this;
         }
 
@@ -138,7 +142,9 @@ abstract class EntityBase implements Entity, JsonSerializable
             $value = new DateTimeImmutable($value);
         }
 
-        $this->{$property} = $value;
+//        $this->{$property} = $value;
+
+        $reflectProperty->setValue($this, $value);
         return $this;
     }
 
