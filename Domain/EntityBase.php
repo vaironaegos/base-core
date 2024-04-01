@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Domain;
 
+use Astrotech\Core\Base\Domain\Collection\CollectionBase;
 use UnitEnum;
 use ReflectionClass;
 use JsonSerializable;
@@ -116,6 +117,11 @@ abstract class EntityBase implements Entity, JsonSerializable
             $value = (!empty($value) ? new $propertyType($value) : null);
         }
 
+        // Logic to fill CollectionBase classes from array
+        if (is_array($value) && is_a($propertyType, CollectionBase::class, true)) {
+            $value = new $propertyType($value);
+        }
+
         // Logic to convert enums to string
         if (enum_exists($propertyType) && is_string($value) || enum_exists($propertyType) && is_int($value)) {
             $value = (!empty($value) ? $propertyType::tryFrom($value) : null);
@@ -170,6 +176,8 @@ abstract class EntityBase implements Entity, JsonSerializable
 
     public function toArray(bool $toSnakeCase = false): array
     {
+        unset($this->isConstructor);
+
         $props = [];
         $propertyList = get_object_vars($this);
 
@@ -187,6 +195,11 @@ abstract class EntityBase implements Entity, JsonSerializable
 
             if ($value instanceof Entity) {
                 $propertyList[$prop] = $value->toArray();
+                continue;
+            }
+
+            if ($value instanceof CollectionBase) {
+                $propertyList[$prop] = $value->getItems();
                 continue;
             }
 
