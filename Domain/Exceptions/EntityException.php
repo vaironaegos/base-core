@@ -11,7 +11,7 @@ final class EntityException extends Exception implements DomainExceptionInterfac
 {
     protected array $details = [];
 
-    private function __construct(string $message = 'Domain Exception', array $details = [])
+    public function __construct(string $message = 'Domain Exception', array $details = [])
     {
         $this->message = $message;
         $this->details = $details;
