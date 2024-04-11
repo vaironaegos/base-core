@@ -179,10 +179,22 @@ abstract class EntityBase implements Entity, JsonSerializable
         unset($this->isConstructor);
 
         $props = [];
-        $propertyList = get_object_vars($this);
+        $propertyList = [];
+
+        $reflectObject = new ReflectionClass($this);
+        $reflectProperties = $reflectObject->getProperties();
+
+        foreach ($reflectProperties as $property) {
+            $propertyList[$property->getName()] = $property->getValue($this);
+        }
 
         /** @var int|string|object $value */
         foreach ($propertyList as $prop => $value) {
+            if (empty($value) && $prop === 'id') {
+                unset($propertyList[$prop]);
+                continue;
+            }
+
             if ($value instanceof DateTimeInterface) {
                 $propertyList[$prop] = $value->format('Y-m-d H:i:s');
                 continue;
