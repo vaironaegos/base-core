@@ -75,9 +75,7 @@ final class RabbitMqAdapter implements QueueSystem
 
     public function publish(string $message, string $queueName, array $options = []): void
     {
-        if (empty($options['exchangeName'])) {
-            throw new Exception('exchangeNotDeclared');
-        }
+        $options['exchangeName'] = env('APP_NAME');
 
         $this->connect();
 
