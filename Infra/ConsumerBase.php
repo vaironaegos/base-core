@@ -48,7 +48,7 @@ abstract class ConsumerBase
                 ['handler' => $handlerName, 'queue' => $this->queueName, 'message' => $this->messageBody],
                 JSON_PRETTY_PRINT
             ),
-            ['category' => 'consumer']
+            ['category' => "{$this->queueName}_'consumer'"]
         );
 
         $errorHandler = function (
@@ -84,7 +84,7 @@ abstract class ConsumerBase
                 $e->getTraceAsString()
             );
 
-            $this->logSystem->error($output, ['category' => 'consumer']);
+            $this->logSystem->error($output, ['category' => "{$this->queueName}_'consumer'"]);
         };
 
         try {
