@@ -80,11 +80,13 @@ final class RabbitMqAdapter implements QueueSystem
         $this->connect();
 
         $msg = new AMQPMessage((string)$message);
-        $this->prepareChannel($queueName, $options['exchangeName'], $options['routingKey']);
+        $routingKey = $options['routingKey'] . "_{$queueName}";
+
+        $this->prepareChannel($queueName, $options['exchangeName'], $routingKey);
         $this->channel->basic_publish(
             $msg,
             $options['exchangeName'],
-            $options['routingKey']
+            $routingKey
         );
 
         $this->channel->close();
