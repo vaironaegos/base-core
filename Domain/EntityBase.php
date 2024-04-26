@@ -95,7 +95,7 @@ abstract class EntityBase implements Entity, JsonSerializable
         $reflectObject = new ReflectionClass($this);
         $reflectProperty = $reflectObject->getProperty($property);
 
-        if (!$this->isConstructor && $reflectProperty->isPrivate()) {
+        if (property_exists($this, 'isConstructor') && !$this->isConstructor && $reflectProperty->isPrivate()) {
             return $this;
         }
 

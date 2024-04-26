@@ -10,8 +10,9 @@ use DomainException;
 final class Email extends ValueObjectBase
 {
     private string $value = '';
+    private bool $isValid = false;
 
-    public function __construct(string $email)
+    public function __construct(string $email, bool $strict = true)
     {
         $email = trim(strtolower($email));
 
@@ -20,14 +21,24 @@ final class Email extends ValueObjectBase
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new DomainException('Invalid E-mail "' . $email . "'");
+            if ($strict) {
+                throw new DomainException('Invalid E-mail "' . $email . "'");
+            }
+
+            return;
         }
 
         $this->value = $email;
+        $this->isValid = true;
     }
 
     public function value(): string|int|float|bool
     {
         return $this->value;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->isValid;
     }
 }

@@ -21,6 +21,27 @@ final class Address extends ValueObjectBase
 
     public function value(): string|int|float|bool
     {
-        return true;
+        return json_encode([
+            'zipCode' => $this->zipCode,
+            'neighborhood' => $this->neighborhood,
+            'city' => $this->city,
+            'state' => $this->state,
+            'number' => $this->number,
+            'street' => $this->street,
+            'complement' => $this->complement,
+        ]);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'zipCode' => $this->zipCode,
+            'neighborhood' => $this->neighborhood,
+            'city' => $this->city,
+            'state' => $this->state,
+            'number' => $this->number,
+            'street' => $this->street,
+            'complement' => $this->complement,
+        ];
     }
 }
