@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra;
 
-use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
-use Astrotech\Core\Base\Exception\ValidationException;
 use Throwable;
 use DateTimeImmutable;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -15,6 +13,8 @@ use Doctrine\DBAL\Exception\DriverException;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Exception\ValidationException;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 abstract class ConsumerBase

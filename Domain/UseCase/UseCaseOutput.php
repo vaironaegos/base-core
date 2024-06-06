@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Domain\UseCase;
 
-use Astrotech\Core\Base\Domain\UseCase\Enum\UseCaseOutputCode;
-use Astrotech\Core\Base\Domain\UseCase\Error\UseCaseError;
 use InvalidArgumentException;
+use Astrotech\Core\Base\Domain\UseCase\Error\UseCaseError;
+use Astrotech\Core\Base\Domain\UseCase\Enum\UseCaseOutputCode;
 
 final class UseCaseOutput
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Domain;
 
-use Astrotech\Core\Base\Domain\Collection\CollectionBase;
 use UnitEnum;
 use ReflectionClass;
 use JsonSerializable;
@@ -13,6 +12,7 @@ use DateTimeInterface;
 use ReflectionUnionType;
 use Astrotech\Core\Base\Domain\Contracts\Entity;
 use Astrotech\Core\Base\Domain\Contracts\ValueObject;
+use Astrotech\Core\Base\Domain\Collection\CollectionBase;
 use Astrotech\Core\Base\Domain\Exceptions\EntityException;
 
 abstract class EntityBase implements Entity, JsonSerializable
@@ -148,7 +148,7 @@ abstract class EntityBase implements Entity, JsonSerializable
             $value = new DateTimeImmutable($value);
         }
 
-//        $this->{$property} = $value;
+        //        $this->{$property} = $value;
 
         $reflectProperty->setValue($this, $value);
         return $this;

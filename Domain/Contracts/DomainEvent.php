@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Astrotech\Core\Base\Domain\Contracts;
 
 use DateTimeImmutable;
-use DateTimeInterface;
 
 interface DomainEvent
 {

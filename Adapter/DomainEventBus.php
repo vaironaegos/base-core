@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Adapter;
 
-use Astrotech\Core\Base\Domain\Contracts\DomainEvent;
+use Psr\Container\ContainerInterface;
 use Astrotech\Core\Base\Domain\Contracts\EventBus;
 use Astrotech\Core\Base\Exception\RuntimeException;
-use Psr\Container\ContainerInterface;
+use Astrotech\Core\Base\Domain\Contracts\DomainEvent;
 
 final class DomainEventBus implements EventBus
 {

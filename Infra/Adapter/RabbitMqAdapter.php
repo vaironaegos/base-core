@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra\Adapter;
 
-use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
-use Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 use Exception;
 use Throwable;
 use AMQPConnectionException;
@@ -13,7 +11,9 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
+use Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 
 final class RabbitMqAdapter implements QueueSystem
 {
