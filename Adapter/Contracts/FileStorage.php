@@ -17,4 +17,6 @@ interface FileStorage
      * @return string The name of the uploaded file.
      */
     public function store(string $destinationPath, string $newName = ''): string;
+
+    public function delete(string $destinationPathWithFileName): bool;
 }
