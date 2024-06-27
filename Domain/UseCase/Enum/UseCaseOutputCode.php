@@ -27,4 +27,5 @@ enum UseCaseOutputCode: string
 
     case RECORD_ALREADY_PAID = 'recordAlreadyPaid';
     case RECORD_NOT_IN_ANALYSIS = 'recordNotInAnalysis';
+    case INDICATION_CODE_IS_INVALID = 'indicationCodeIsInvalid';
 }
