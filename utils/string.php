@@ -216,3 +216,16 @@ if (!function_exists('randomString')) {
         return substr(bin2hex(random_bytes($length)), 0, $length);
     }
 }
+
+if (!function_exists('slugify')) {
+    function slugify(string $str): string
+    {
+        $slug = Normalizer::normalize($str, Normalizer::FORM_D);
+        $slug = preg_replace('/\p{Mn}+/u', '', $slug);
+        $slug = preg_replace('/[#$%^&*()+=\-[\]\';,.\/{}|":<>!?~\\\\]/', ' ', $slug);
+        $slug = preg_replace('/\s+/', ' ', $slug);
+        $slug = preg_replace('/\s/', '-', $slug);
+        $slug = strtolower($slug);
+        return trim($slug, '-');
+    }
+}
