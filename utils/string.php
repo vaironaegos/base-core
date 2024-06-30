@@ -229,3 +229,15 @@ if (!function_exists('slugify')) {
         return trim($slug, '-');
     }
 }
+
+if (!function_exists('containsAnySubstring')) {
+    function containsAnySubstring(string $string, array $array): bool
+    {
+        foreach ($array as $substring) {
+            if (str_contains($string, $substring)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
