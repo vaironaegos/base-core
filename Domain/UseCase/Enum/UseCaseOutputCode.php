@@ -11,6 +11,8 @@ enum UseCaseOutputCode: string
     case APPLICATION_ERROR = 'applicationError';
     case RECORD_ALREADY_EXISTS = 'recordAlreadyExists';
     case RECORD_NOT_FOUND = 'recordNotFound';
+    case FIELD_ALREADY_IN_USE = 'fieldAlreadyInUse';
+    case FIELD_IS_INVALID = 'fieldIsInvalid';
     case INVALID_SIGNATURE = 'invalidSignature';
     case TOKEN_IS_EXPIRED = 'tokenIsExpired';
     case TOKEN_IS_INVALID = 'tokenIsInvalid';
