@@ -77,7 +77,10 @@ final class GuzzleHttpClient implements HttpClient
     public function delete(string $uri, array $params = []): Response
     {
         $requestParams = [
-            'headers' => $params['headers'] ?? []
+            'json' => $params['body'] ?? [],
+            'debug' => $params['debug'] ?? false,
+            'headers' => $params['headers'] ?? [],
+            'query' => $params['query'] ?? null
         ];
 
         return $this->httpClient->delete($uri, $requestParams);
