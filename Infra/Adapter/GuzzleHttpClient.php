@@ -32,7 +32,7 @@ final class GuzzleHttpClient implements HttpClient
     public function post(string $uri, array $body = [], array $params = []): Response
     {
         $requestParams = [
-            'json' => $params['body'] ?? [],
+            'json' => $body,
             'debug' => $params['debug'] ?? false,
             'headers' => $params['headers'] ?? [],
             'query' => $params['query'] ?? null
@@ -52,7 +52,7 @@ final class GuzzleHttpClient implements HttpClient
     public function put(string $uri, array $body = [], array $params = []): Response
     {
         $requestParams = [
-            'json' => $params['body'] ?? [],
+            'json' => $body,
             'debug' => $params['debug'] ?? false,
             'headers' => $params['headers'] ?? [],
             'query' => $params['query'] ?? null
