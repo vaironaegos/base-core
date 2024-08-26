@@ -147,7 +147,7 @@ if (!function_exists('convertDecimalToLongString')) {
         $d = ["", "dez", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
         $d10 = ["dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezesete", "dezoito", "dezenove"];
         $u = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
-
+        $rt = 'zero';
         $z = 0;
 
         $valor = number_format($valor, 2, ".", ".");
@@ -189,7 +189,7 @@ if (!function_exists('convertDecimalToLongString')) {
             }
         }
 
-        return ($rt ? $rt : "zero");
+        return ($rt ?: "zero");
     }
 }
 

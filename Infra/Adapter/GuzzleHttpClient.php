@@ -71,7 +71,7 @@ final class GuzzleHttpClient implements HttpClient
 
     public function patch(string $uri, array $body = [], array $params = []): Response
     {
-        $this->put($uri, $body, $params);
+        return $this->put($uri, $body, $params);
     }
 
     public function delete(string $uri, array $params = []): Response

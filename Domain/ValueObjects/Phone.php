@@ -10,7 +10,7 @@ final class Phone extends ValueObjectBase
 {
     private string $phone;
 
-    public function __construct(string $phone, string $country = 'br')
+    public function __construct(string $phone)
     {
         $phoneSanitized = preg_replace('/[^0-9]/', '', $phone);
         $this->phone = $phoneSanitized;

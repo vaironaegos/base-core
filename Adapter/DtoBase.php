@@ -17,7 +17,7 @@ abstract class DtoBase implements Dto, JsonSerializable
     public function values(): array
     {
         $values = get_object_vars($this);
-        array_walk($values, fn (&$value, $property) => $value = $this->get($property));
+        array_walk($values, fn(&$value, $property) => $value = $this->get($property));
         return $values;
     }
 
@@ -37,10 +37,10 @@ abstract class DtoBase implements Dto, JsonSerializable
         $reflectProperty = $reflectObject->getProperty($property);
         $isUnitType = $reflectProperty->getType() instanceof ReflectionUnionType;
 
-        if (!empty($value) && is_array($value) && !$isUnitType) {
+        if (!empty($reflectProperty->getValue()) && is_array($reflectProperty->getValue()) && !$isUnitType) {
             $propertyType = $reflectProperty->getType()->getName();
             if (is_a($propertyType, Dto::class, true)) {
-                return new static(...$value);
+                return new static(...$reflectProperty->getValue());
             }
         }
 
@@ -95,7 +95,7 @@ abstract class DtoBase implements Dto, JsonSerializable
 
     /**
      * Checks if a DTO attribute exists.
-     * @param mixed $name The name of the attribute.
+     * @param string $name The name of the attribute.
      * @return bool True if the attribute exists, false otherwise.
      */
     public function __isset(string $name): bool

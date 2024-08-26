@@ -216,7 +216,7 @@ abstract class EntityBase implements Entity, JsonSerializable
             }
 
             if (is_object($value) && enum_exists($value::class)) {
-                $propertyList[$prop] = !empty($value) ? $value->value : null;
+                $propertyList[$prop] = $value->value;
                 continue;
             }
 

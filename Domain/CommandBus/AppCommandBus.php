@@ -9,14 +9,12 @@ use Astrotech\Core\Base\Adapter\Contracts\Dto;
 use Astrotech\Core\Base\Domain\Contracts\EventBus;
 use Astrotech\Core\Base\Domain\Contracts\CommandBus;
 use Astrotech\Core\Base\Domain\Contracts\CommandHandler;
-use Astrotech\Core\Base\Domain\Contracts\EventStoreRepository;
 
 final class AppCommandBus implements CommandBus
 {
     public function __construct(
         private readonly array $handlers,
         private readonly EventBus $eventBus,
-        private readonly ?EventStoreRepository $eventStoreRepo = null,
         private readonly string $methodName = 'handle'
     ) {
     }
@@ -31,7 +29,6 @@ final class AppCommandBus implements CommandBus
 
         /** @var CommandHandler $handler */
         $handler = $this->handlers[$commandName];
-        $handler->setEventStoreRepo($this->eventStoreRepo);
         $handler->setEventBus($this->eventBus);
 
         if (!method_exists($handler, $this->methodName)) {

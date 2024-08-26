@@ -14,9 +14,9 @@ abstract class TestCase extends PHPUnitTestCast
 
     protected static Generator $faker;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function __construct(string $name = null)
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
         self::$faker = Faker::create('pt_BR');
     }
 }
