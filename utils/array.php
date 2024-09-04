@@ -91,3 +91,11 @@ if (!function_exists('unsetKeyInAssociativeArray')) {
         }
     }
 }
+
+if (!function_exists('arrayFind')) {
+    function arrayFind(array $array, callable $callback): ?array
+    {
+        $arrayElement = array_filter($array, $callback);
+        return !empty($arrayElement) ? current($arrayElement) : null;
+    }
+}
