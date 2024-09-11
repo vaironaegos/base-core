@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Astrotech\Core\Base\Adapter\Contracts;
+namespace Astrotech\Core\Base\Adapter\Contracts\QueueSystem;
 
 interface QueueSystem
 {
     /**
      * Publish a message to the specified queue.
-     * @param string $message The message to be published.
-     * @param string $queueName The name of the queue to publish the message to.
+     * @param QueueMessage $message The message to be published.
      * @param array $options Optional options for publishing the message.
      * @return void
      */
-    public function publish(string $message, string $queueName, array $options = []): void;
+    public function publish(QueueMessage $message, array $options = []): void;
 
     /**
      * Consume messages from the specified queue and process them using the provided callback.
