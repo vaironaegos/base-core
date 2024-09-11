@@ -9,9 +9,9 @@ use GuzzleHttp\Exception\RequestException;
 use Doctrine\DBAL\Exception\DriverException;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
-use Astrotech\ApiBase\Adapter\Contracts\LogSystem;
-use Astrotech\ApiBase\Exception\ValidationException;
-use Astrotech\ApiBase\Infra\QueueConsumer\ConsumerBase;
+use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
+use Astrotech\Core\Base\Exception\ValidationException;
+use Astrotech\Core\Base\Infra\QueueConsumer\ConsumerBase;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 function processMessage(AMQPMessage $message, ContainerInterface $container): void
