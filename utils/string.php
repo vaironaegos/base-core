@@ -213,7 +213,7 @@ if (!function_exists('env')) {
 if (!function_exists('config')) {
     function config(string $name): mixed
     {
-        $configs = defined(CONFIG) ? CONFIG : [];
+        $configs = defined('CONFIG') ? CONFIG : [];
 
         if (empty($configs)) {
             return $configs;
