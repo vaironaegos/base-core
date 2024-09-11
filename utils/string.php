@@ -210,6 +210,25 @@ if (!function_exists('env')) {
     }
 }
 
+if (!function_exists('config')) {
+    function config(string $name): mixed
+    {
+        $configs = defined(CONFIG) ? CONFIG : [];
+
+        if (empty($configs)) {
+            return $configs;
+        }
+
+        $keys = explode('.', $name);
+
+        foreach ($keys as $key) {
+            $configs = $configs[$key];
+        }
+
+        return $configs;
+    }
+}
+
 if (!function_exists('randomString')) {
     function randomString(int $length = 16): string
     {
