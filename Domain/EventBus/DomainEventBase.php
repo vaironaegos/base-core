@@ -11,6 +11,7 @@ abstract class DomainEventBase implements DomainEvent
 {
     private string $eventId = '';
     private string $userId = '';
+    private string $action = '';
     private bool $processed = false;
 
     public function when(): DateTimeImmutable
@@ -27,7 +28,7 @@ abstract class DomainEventBase implements DomainEvent
         ];
     }
 
-    public function name(): string
+    public static function name(): string
     {
         return get_called_class();
     }

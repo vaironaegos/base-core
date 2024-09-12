@@ -24,6 +24,17 @@ if (!function_exists('isDateTimeIso8601')) {
     }
 }
 
+if (!function_exists('isDateTimeUs')) {
+    function isDateTimeUs(string $dateTime): bool
+    {
+        if (empty($dateTime)) {
+            return false;
+        }
+
+        return preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $dateTime) > 0;
+    }
+}
+
 if (!function_exists('isDateTimeIso')) {
     function isDateTimeIso(string $dateTime): bool
     {

@@ -7,6 +7,7 @@ namespace Astrotech\Core\Base\Adapter;
 use ReflectionClass;
 use JsonSerializable;
 use DateTimeInterface;
+use ReflectionException;
 use ReflectionUnionType;
 use Astrotech\Core\Base\Adapter\Contracts\Dto;
 use Astrotech\Core\Base\Adapter\Exception\ImmutableDtoException;
@@ -53,6 +54,31 @@ abstract class DtoBase implements Dto, JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    /**
+     * Creates an instance of the DTO from an associative array of values.
+     * @param array $values An associative array of values.
+     * @return static An instance of the DTO.
+     * @throws ReflectionException
+     */
+    public static function createFromArray(array $values): static
+    {
+        $reflector = new ReflectionClass(static::class);
+        $constructor = $reflector->getConstructor();
+        $params = $constructor->getParameters();
+
+        $args = [];
+        foreach ($params as $param) {
+            $name = $param->getName();
+            if (array_key_exists($name, $values)) {
+                $args[] = $values[$name];
+            } else {
+                $args[] = $param->getDefaultValue();
+            }
+        }
+
+        return $reflector->newInstanceArgs($args);
     }
 
     public function toArray(): array
