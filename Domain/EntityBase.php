@@ -138,17 +138,15 @@ abstract class EntityBase implements Entity, JsonSerializable
         }
 
         $isDateValue = (
-            is_string($value) &&
-            (isDateIso8601($value) || isDateTimeIso8601($value) || isDateTimeIso($value)) ||
-            $propertyType instanceof DateTimeInterface && !is_null($value) ||
-            $propertyType == 'DateTimeInterface' && !is_null($value)
+            is_string($value) && !empty($value) &&
+            (isDateIso8601($value) || isDateTimeIso8601($value) || isDateTimeIso($value))
         );
 
         if ($isDateValue) {
             $value = new DateTimeImmutable($value);
         }
 
-        //        $this->{$property} = $value;
+        // $this->{$property} = $value;
 
         $reflectProperty->setValue($this, $value);
         return $this;
