@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Infra\Doctrine;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Astrotech\Core\Base\Domain\Contracts\ValueObject;
 use ReflectionClass;
 use DateTimeInterface;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 abstract class DoctrineDocumentBase
 {
