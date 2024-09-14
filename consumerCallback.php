@@ -11,7 +11,7 @@ use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Exception\AMQPProtocolException;
 use Astrotech\Core\Base\Adapter\Contracts\LogSystem;
 use Astrotech\Core\Base\Exception\ValidationException;
-use Astrotech\Core\Base\Infra\QueueConsumer\ConsumerBase;
+use Astrotech\Core\Base\Infra\ConsumerBase;
 use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 
 function processMessage(AMQPMessage $message, ContainerInterface $container): void
@@ -90,7 +90,7 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                     };
 
                     /** @var ConsumerBase $handler */
-                    $handler = new $handlerClassName($container, $message, $traceId);
+                    $handler = new $handlerClassName($message, $container, $traceId);
                     $handler->execute();
                 }
 
@@ -99,12 +99,12 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
                 $errorHandler($e);
                 $message->ack();
             } catch (
-            RequestException
-            | ConnectException
-            | AMQPRuntimeException
-            | AMQPProtocolException
-            | AMQPConnectionClosedException
-            $e
+                RequestException
+                | ConnectException
+                | AMQPRuntimeException
+                | AMQPProtocolException
+                | AMQPConnectionClosedException
+                $e
             ) {
                 $errorHandler($e);
                 $message->nack(true);
