@@ -23,12 +23,35 @@ function processMessage(AMQPMessage $message, ContainerInterface $container): vo
     $traceId = uniqid();
 
     foreach ($consumerRoutes as $routingKey => $handlersList) {
+        $logSystem->info(
+            json_encode([
+                'messageRoutingKey' => $message->getRoutingKey(),
+                'consumerRoutingKey' => $routingKey
+            ], JSON_PRETTY_PRINT),
+            ['category' => $traceId]
+        );
+
         if ($message->getRoutingKey() !== $routingKey) {
             continue;
         }
 
+        $logSystem->info(
+            json_encode(
+                [
+                    'message' => "Message Routing Key '{$message->getRoutingKey()}' found in consumers routes"
+                ],
+                JSON_PRETTY_PRINT
+            ),
+            ['category' => $traceId]
+        );
+
         foreach ($handlersList as $routingKeyAction => $handlers) {
             $actionName = trim($messageBody['action']);
+
+            $logSystem->info(
+                json_encode(['messageAction' => $actionName, 'routeActions' => $routingKeyAction], JSON_PRETTY_PRINT),
+                ['category' => $traceId]
+            );
 
             if ($routingKeyAction !== $actionName) {
                 continue;

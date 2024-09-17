@@ -39,6 +39,11 @@ abstract class ConsumerBase
         $this->rawMessageBody = $message->getBody();
         $this->metaBody = json_decode($message->getBody(), true);
         $this->messageBody = $this->metaBody['data'];
+
+        // to cover when Domain Event Class structure
+        if (isset($this->messageBody['data']) && isset($this->messageBody['when'])) {
+            $this->messageBody = $this->messageBody['data'];
+        }
     }
 
     public function execute(): void
