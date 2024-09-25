@@ -260,3 +260,10 @@ if (!function_exists('containsAnySubstring')) {
         return false;
     }
 }
+
+if (!function_exists('enumValuesAsString')) {
+    function enumValuesAsString(BackedEnum|UnitEnum|string $enum): string
+    {
+        return implode(',', array_column($enum::cases(), 'value'));
+    }
+}
