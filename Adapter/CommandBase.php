@@ -11,8 +11,8 @@ abstract class CommandBase extends DtoBase implements Command
     public static function handle(...$args): mixed
     {
         $commandInstance = new static(...$args);
-        $handlerClass = $commandInstance->handleClassName();
-        $handler = new $handlerClass();
+        $handlerClassName = $commandInstance->handleClassName();
+        $handler = app($handlerClassName);
         return $handler->execute($commandInstance);
     }
 

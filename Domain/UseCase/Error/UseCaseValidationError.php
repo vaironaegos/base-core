@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Astrotech\Core\Base\Domain\UseCase\Error;
 
-final readonly class UseCaseValidationError implements UseCaseError
+final class UseCaseValidationError implements UseCaseError
 {
     public function __construct(
-        public string $field,
-        public array $details = []
+        public readonly string $field,
+        public readonly mixed $providedValue = null,
+        public readonly array $details = [],
     ) {
     }
 
@@ -16,6 +17,7 @@ final readonly class UseCaseValidationError implements UseCaseError
     {
         return [
             'field' => $this->field,
+            'value' => $this->providedValue,
             'details' => $this->details
         ];
     }
