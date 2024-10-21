@@ -6,23 +6,21 @@ namespace Astrotech\Core\Base\Domain\UseCase;
 
 use InvalidArgumentException;
 use Astrotech\Core\Base\Domain\UseCase\Error\UseCaseError;
-use Astrotech\Core\Base\Domain\UseCase\Enum\UseCaseOutputCode;
 
 final class UseCaseOutput
 {
     private bool $success;
-    private ?string $errorKey = null;
 
     public function __construct(
-        public UseCaseOutputCode $resultCode = UseCaseOutputCode::OK,
+        public ?UseCaseOutputCode $resultCode = null,
         public ?UseCaseError $error = null,
         public array $data = [],
     ) {
-        $this->success = is_null($error);
-
-        if (!$this->success) {
-            $this->errorKey = UseCaseOutputCode::tryFrom($this->resultCode->value)->value;
+        if (is_null($this->resultCode)) {
+            $this->resultCode = UseCaseOutputCode::ok();
         }
+
+        $this->success = is_null($error);
     }
 
     public function values(): array
@@ -34,7 +32,7 @@ final class UseCaseOutput
         return [
             ...$this->error->output(),
             'data' => $this->data,
-            'errorKey' => $this->errorKey
+            'errorKey' => $this->resultCode->getValue()
         ];
     }
 
