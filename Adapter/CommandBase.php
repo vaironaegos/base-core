@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Astrotech\Core\Base\Adapter;
 
 use Astrotech\Core\Base\Adapter\Contracts\Command;
+use Astrotech\Core\Base\Domain\UseCase\UseCaseOutput;
 
 abstract class CommandBase extends DtoBase implements Command
 {
-    public static function handle(...$args): mixed
+    public static function handle(...$args): UseCaseOutput
     {
         $commandInstance = new static(...$args);
         $handlerClassName = $commandInstance->handleClassName();
