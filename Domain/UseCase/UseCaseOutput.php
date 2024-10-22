@@ -54,4 +54,9 @@ final class UseCaseOutput
 
         return $this->data[$name];
     }
+
+    public function isSuccess(): bool
+    {
+        return $this->success;
+    }
 }
