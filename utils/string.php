@@ -88,8 +88,12 @@ if (!function_exists('isUuidString')) {
 }
 
 if (!function_exists('convertToBool')) {
-    function convertToBool(int|string|bool $term): bool
+    function convertToBool(int|string|bool|null $term): bool
     {
+        if (empty($term)) {
+            return false;
+        }
+
         if ($term === true || $term === false) {
             return $term;
         }
