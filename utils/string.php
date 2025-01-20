@@ -271,3 +271,10 @@ if (!function_exists('enumValuesAsString')) {
         return implode(',', array_column($enum::cases(), 'value'));
     }
 }
+
+if (!function_exists('blankSpacesToUnderscore')) {
+    function blankSpacesToUnderscore(string $string): string
+    {
+        return str_replace(' ', '_', $string);
+    }
+}
