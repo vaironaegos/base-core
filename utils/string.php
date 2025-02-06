@@ -272,6 +272,13 @@ if (!function_exists('enumValuesAsString')) {
     }
 }
 
+if (!function_exists('enumCaseNamesAsString')) {
+    function enumCaseNamesAsString(BackedEnum|UnitEnum|string $enum): string
+    {
+        return implode(',', array_column($enum::cases(), 'name'));
+    }
+}
+
 if (!function_exists('blankSpacesToUnderscore')) {
     function blankSpacesToUnderscore(string $string): string
     {
