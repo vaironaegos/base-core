@@ -16,7 +16,7 @@ final class GuzzleHttpClient implements HttpClient
     {
         $this->httpClient = new Client([
             'base_uri' => '',
-            'timeout' => 10
+            'timeout' => 20
         ]);
     }
 
