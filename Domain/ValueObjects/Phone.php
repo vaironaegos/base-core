@@ -16,7 +16,7 @@ final class Phone extends ValueObjectBase
         $this->phone = $phoneSanitized;
     }
 
-    public function value(): string|int|float|bool
+    public function value(): string
     {
         return $this->phone;
     }

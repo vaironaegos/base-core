@@ -19,7 +19,7 @@ final class Address extends ValueObjectBase
     ) {
     }
 
-    public function value(): string|int|float|bool
+    public function value(): string
     {
         return json_encode([
             'zipCode' => $this->zipCode,

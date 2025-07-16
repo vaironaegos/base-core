@@ -79,7 +79,7 @@ final class Cpf extends ValueObjectBase
         return preg_replace("/(\d{3})(\d{3})(\d{3})(\d{2})/", "\$1.\$2.\$3-\$4", $this->cpf);
     }
 
-    public function value(): string|int|float|bool
+    public function value(): string
     {
         return $this->cpf;
     }
