@@ -99,3 +99,22 @@ if (!function_exists('arrayFind')) {
         return !empty($arrayElement) ? current($arrayElement) : null;
     }
 }
+
+if (!function_exists('toSnakeCaseKeys')) {
+    function toSnakeCaseKeys(array $input): array
+    {
+        $result = [];
+        foreach ($input as $key => $value) {
+            $newKey = strtolower(preg_replace('/[A-Z]/', '_$0', $key));
+            $newKey = ltrim($newKey, '_');
+
+            if (is_array($value)) {
+                $value = toSnakeCaseKeys($value);
+            }
+
+            $result[$newKey] = $value;
+        }
+
+        return $result;
+    }
+}
