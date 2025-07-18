@@ -118,3 +118,25 @@ if (!function_exists('toSnakeCaseKeys')) {
         return $result;
     }
 }
+
+if (!function_exists('toCamelCaseKeys')) {
+    function toCamelCaseKeys(array $input): array
+    {
+        $result = [];
+        foreach ($input as $key => $value) {
+            if (!is_string($key)) {
+                $newKey = $key;
+            } else {
+                $newKey = lcfirst(str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $key))));
+            }
+
+            if (is_array($value)) {
+                $value = toCamelCaseKeys($value);
+            }
+
+            $result[$newKey] = $value;
+        }
+
+        return $result;
+    }
+}
