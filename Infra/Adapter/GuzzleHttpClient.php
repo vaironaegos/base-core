@@ -12,11 +12,11 @@ final class GuzzleHttpClient implements HttpClient
 {
     private Client $httpClient;
 
-    public function __construct()
+    public function __construct(?int $timeout = null)
     {
         $this->httpClient = new Client([
             'base_uri' => '',
-            'timeout' => 20
+            'timeout' => $timeout ?? 20
         ]);
     }
 
